@@ -1,0 +1,75 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+/**
+ * Category view template
+ *
+ * @var $block \Magento\Catalog\Block\Category\View
+ */
+?>
+
+<?php if ($block->isContentMode() || $block->isMixedMode()): ?>
+    <div class="category-cms">
+        <?= $block->getCmsBlockHtml() ?>
+    </div>
+<?php endif; ?>
+
+
+<style>
+    .wellness_package .col-md-6{margin-top:35px;}
+    .container.e-subscribe {margin-top: 46px;}
+</style>
+<div class="container"">
+    <div class="row wellness_package">
+
+<?php
+$objectManager =  \Magento\Framework\App\ObjectManager::getInstance();        
+
+$categoryFactory = $objectManager->get('\Magento\Catalog\Model\CategoryFactory');
+$categoryHelper = $objectManager->get('\Magento\Catalog\Helper\Category');
+$categoryRepository = $objectManager->get('\Magento\Catalog\Model\CategoryRepository');
+$store = $objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore();
+
+$categoryId = 7; // YOUR CATEGORY ID
+$category = $categoryFactory->create()->load($categoryId);
+
+$categoryProducts = $category->getProductCollection()
+                             ->addAttributeToSelect('*');
+
+foreach ($categoryProducts as $product) 
+{
+    $imageUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage();
+    ?>
+<!--
+     <div class="product-container">
+                  <a href="<?= $product->getProductUrl(); ?>">
+
+                     <div class="new-arrivals-image"><img src="<?= $imageUrl;?>"></div>
+                     <div class="product-name"><span class="name"><?= $product->getName(); ?></span></div>
+                  </a>
+                  <div class="price"><span class="pt"><?= $product->getPrice(); ?></span></div>
+               </div>-->
+               
+               
+    
+        <div class="col-md-6">
+            <a href="<?= $product->getProductUrl(); ?>/">
+                <img style="width:100%" src="<?= $imageUrl;?>" alt="<?=$product->getName()?>" title="<?=$product->getName()?>">
+            </a>
+        </div>           
+    
+    <?php
+    }
+    ?>
+    <div>
+</div>
+
+
+

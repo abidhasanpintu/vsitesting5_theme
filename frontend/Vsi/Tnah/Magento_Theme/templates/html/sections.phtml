@@ -1,0 +1,345 @@
+<?php //
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php //
+
+/**
+*  General template for displaying group of blocks devided into sections
+*/
+
+$group = $block->getGroupName();
+$groupCss = $block->getGroupCss();
+$groupBehavior = $block->getGroupBehaviour() ? $block->getGroupBehaviour() : '{"tabs":{"openedState":"active"}}';
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$currentCustomer = $objectManager->create('Magento\Customer\Model\Session');
+//$currentCustomer = $objectManager->create('Magento\Customer\Helper\Session\CurrentCustomer');
+
+?>
+
+<script type="text/javascript">
+	require(['jquery','js/slick.min'],function($){
+		require(['js/bootstrap.min','js/design','js/slick.min','js/lazysizes.min']);
+	});
+</script>
+
+<style>
+ @import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
+.product-shop .product-secondary, .productInfo .price-box,.add-to-box,.autoshipImg,.ship_details,.price-box{display: none !important;}
+.navigation {background: none;}
+.cms-animal-home .column.main{padding-bottom:0px !important;}
+.slick-dots button{box-shadow:none;}
+.product-reviews-summary .reviews-actions a:not(:last-child) {margin-right: 16px;}
+.reviews-actions .view {border-right: 1px solid #00631f;padding-right: 10px;}
+#product-options-wrapper .fieldset p {clear: both !important;}
+</style>
+
+
+<!-- Header Sections Starts aafd-->
+<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="top_header">
+    <div class="container">
+      <div class="row">
+      <div class="col-xs-12 col-sm-3">
+         <div class="professional-login"><!--<ul><li><a href="/professionals/">Professionals Login</a></li></ul>-->
+         </div>
+      </div>
+      <div class="col-xs-12 col-sm-9 t-right">
+        <div class="toplink-section-1"><ul>
+                <!--<li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Welcome <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <?php //echo $this->getChildHtml('topLinks') ?>
+                        <li><a href="/auto-ship-manager">Autoship Manager</a></li>
+                        <li><a href="/sales/order/history/">Order History</a></li>
+                        <li><a href="/professionals/">Professionals</a></li>
+                    </ul>
+                </li>-->
+               <!-- <li class="display_none_mobile" ><a href="/professionals/">Professionals</a></li>-->
+            
+          </ul>    
+        </div>
+        <!--<div class="toplink-section-2"><?php //echo $this->getChildHtml('minicart_head'); ?></div>-->
+        <div class="toplink-section-3">
+		<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('animal-top-header')->toHtml() ?>
+		<?php //echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal-top-header')->toHtml(); ?></div>
+      </div>
+      
+      <!--<div class="col-xs-12 free-ship">
+          <div class="text-right">
+				<a href="#"><img class="free-shipping" src="/skin/frontend/rwd/animalhealth/images/free-shipping.png"></a>
+				<p style="margin: 0;"></p>
+		  </div>
+      </div>-->
+      
+      </div>
+    </div>
+  </div>
+  
+  <div class="container main_nav">
+    <div class="navbar-header">
+	  <a class="navbar-brand" href="<?php echo $this->getUrl('') ?>"><img class="lazyload" data-src="<?php echo $block->getLayout()->getBlock('logo')->getLogoSrc() ?>"/></a>
+    </div>
+    <div class="" id="myNavbar">
+      
+      <ul class="nav navbar-nav navbar-right shop-ul">
+        <?php  echo $this->getLayout()->createBlock("Magento\Theme\Block\Html\Topmenu")->setTemplate("Magento_Theme::html/topmenu.phtml")->toHtml();?>	  
+         <?php ////echo $this->getChildHtml('topMenu') ?>
+		 
+         
+      </ul>
+      
+    </div>
+	
+	
+	
+	
+    <div id="header_search" class="skip-content h_search">
+	    <?php
+                    	echo $this->getLayout()
+                              ->createBlock('Magento\Framework\View\Element\Template')
+                              ->setTemplate('Magento_Search::form.mini.phtml')
+                              ->toHtml();
+                     ?> 
+	     <?php // echo $this->getChildHtml('topSearch') ?>
+        </div>
+    <ul class="menu menu-extra">
+    		<li class="mobilebar"><i class="fa fa-bars"></i></li>
+            <li class="click_search"><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
+    </ul>
+	
+	
+	
+  </div>
+  
+  <div class="container-fluid nav-mob">
+    <div class="row">
+        <div class="col-xs-3">
+            <p class="text-center mobilebar"><i class="fa fa-bars" aria-hidden="true"></i><span class="dpn">MENU</span></p>
+        </div>
+        <div class="col-xs-3">
+            <p class="text-center click_search "><i class="fa fa-search" aria-hidden="true"></i><span class="dpn">SEARCH</span></p>
+        </div>
+        <div class="col-xs-3">
+            <p class="text-center"><a href="<?php //////echo Mage::getBaseUrl();?>/customer/account/" style="pointer-events: none;cursor: default;"><i class="fa fa-user" aria-hidden="true"></i> <span class="dpn">ACCOUNT</span></p>
+        </div>
+        <div class="col-xs-3">
+           <span class="last-p"> <?php //////echo $this->getChildHtml('minicart_head'); ?><a href="/checkout/cart/" style="pointer-events: none;cursor: default;" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> <span class="dpn" style="margin-left:0;">CART</span></a> </span>
+        </div>
+    </div>
+</div>
+  
+
+</nav>
+
+<?php if(isset($DISABLE_OLD_HEADER)): ?>
+
+
+<div class="header-language-background">
+
+
+
+<form class="navbar-form navbar-left">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+<div id="header-search" class="skip-content">
+            <?php //////echo $this->getChildHtml('topSearch') ?>
+        </div>
+
+
+
+
+    <div class="header-language-container">
+        <div class="store-language-container">
+            <?php //////echo $this->getChildHtml('store_language') ?>
+        </div>
+
+        <?php //////echo $this->getChildHtml('currency_switcher') ?>
+
+        <p class="welcome-msg"><?php //////echo $this->getChildHtml('welcome') ?> <?php //////echo $this->getChildHtml('accountLinks') ?></p>
+    </div>
+</div>
+
+<header id="header" class="page-header">
+    <div class="page-header-container">
+        <a class="logo" href="<?php //////echo $this->getUrl('') ?>">
+            <img src="<?php //////echo $this->getLogoSrc() ?>" alt="<?php //////echo $this->getLogoAlt() ?>" class="large" />
+            <img src="<?php //////echo $this->getLogoSrcSmall() ?>" alt="<?php //////echo $this->getLogoAlt() ?>" class="small" />
+        </a>
+
+        <?php // In order for the language switcher to display next to logo on smaller viewports, it will be moved here.
+              // See app.js for details ?>
+        <div class="store-language-container"></div>
+
+        <!-- Skip Links -->
+
+        <div class="skip-links">
+            <a href="#header-nav" class="skip-link skip-nav">
+                <span class="icon"></span>
+                <span class="label"><?php //////echo $this->__('Menu'); ?></span>
+            </a>
+
+            <a href="#header-search" class="skip-link skip-search">
+                <span class="icon"></span>
+                <span class="label"><?php //////echo $this->__('Search'); ?></span>
+            </a>
+
+            <div class="account-cart-wrapper">
+                <a href="<?php //////echo $this->helper('customer')->getAccountUrl(); ?>" data-target-element="#header-account" class="skip-link skip-account">
+                    <span class="icon"></span>
+                    <span class="label"><?php //////echo $this->__('Account'); ?></span>
+                </a>
+
+                <!-- Cart -->
+
+                <div class="header-minicart">
+                    <?php //////echo $this->getChildHtml('minicart_head'); ?>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Navigation -->
+
+        <div id="header-nav" class="skip-content">
+            <?php //////echo $this->getChildHtml('topMenu') ?>
+        </div>
+
+        <!-- Search -->
+
+        <div id="header-search" class="skip-content">
+            <?php //////echo $this->getChildHtml('topSearch') ?>
+        </div>
+
+        <!-- Account -->
+
+        <div id="header-account" class="skip-content">
+            <?php //////echo $this->getChildHtml('topLinks') ?>
+        </div>
+    </div>
+</header>
+<?php endif; ?>
+
+<?php //////echo $this->getChildHtml('topContainer'); ?>
+	
+	
+	
+	
+</header> <!-- Header Sections End -->
+<!-- Banner Section starts -->
+<?php //////echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::banners.phtml")->toHtml() ?>
+<!-- Banner Section Ends -->
+
+<!--
+<script>
+
+require(['jquery'],function($){
+    
+    var loadSize = function(){
+		var wid = jQuery(window).width();
+		if(wid<=767){
+			jQuery('#moveableMiniCart').detach().appendTo('#minicartForMobile');
+		}else{
+			jQuery('#moveableMiniCart').detach().appendTo('#minicartForDesktop');
+		}
+		
+		
+		var headerH = jQuery('header #nav_bar').height();
+		headerH = headerH - 12;
+		console.log(headerH);
+		
+		if(wid<=944){
+		    
+		    jQuery('html>body').addClass('fixBodyMargin');
+		    jQuery('div#banner-slider-carousel').addClass('fixSliderMargin');
+		    jQuery('.catalog-category-view .category-view .category-image .image').addClass('fixZeroMargin');
+		    jQuery('.header_myacc_bacground.mt-025').addClass('fixZeroMargin');
+		    
+		    
+		    //jQuery('html>body').css('margin-top',headerH+'px !important');
+		    
+		    jQuery('body.fixBodyMargin').css('cssText', 'margin-top: '+ headerH+'px !important');
+		    jQuery('.fixSliderMargin').css('cssText', 'margin-top: 3px !important');
+		    jQuery('.fixZeroMargin').css('cssText', 'margin-top: 0px !important');
+		    
+		}else{
+		    
+		    jQuery('body.fixBodyMargin').removeAttr('style');
+		    jQuery('.fixSliderMargin').removeAttr('style');
+		    jQuery('.catalog-category-view .category-view .category-image .image').removeAttr('style');
+		    jQuery('.header_myacc_bacground.mt-025').removeAttr('style');
+		    
+		    jQuery('html>body').removeClass('fixBodyMargin');
+		    jQuery('div#banner-slider-carousel').removeClass('fixSliderMargin');
+		    jQuery('.catalog-category-view .category-view .category-image .image').removeClass('fixZeroMargin');
+		    jQuery('.header_myacc_bacground.mt-025').removeClass('fixZeroMargin');
+		    
+		}
+		
+	}
+    
+	jQuery(window).on('resize', function(){
+		loadSize();
+	});
+	
+	jQuery(document).ready(function(){
+		loadSize();
+	});
+	
+	
+});
+
+</script>
+
+<script type="text/javascript">
+
+require(['jquery','js/slick.min'],function($){
+		 
+	jQuery('#news_slider').slick({
+		  infinite: true,
+		  speed: 3000,
+		  autoplay: true,
+		  autoplaySpeed: 4000,
+		  slidesToShow: 1,
+		  slidesToScroll: 1,
+		  arrows: false
+		 });	
+
+	
+
+});
+
+        
+</script> -->
+
+
+
+
+
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "customer": {
+                    "component": "Magento_Customer/js/view/customer"
+                }
+            }
+        }
+    }
+}
+</script>
+
+
+
+

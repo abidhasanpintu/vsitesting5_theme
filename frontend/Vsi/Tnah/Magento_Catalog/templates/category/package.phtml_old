@@ -1,0 +1,105 @@
+<?php
+
+/*
+
+$objectManager =  \Magento\Framework\App\ObjectManager::getInstance();        
+ 
+$appState = $objectManager->get('\Magento\Framework\App\State');
+$appState->setAreaCode('frontend');
+ 
+$categoryFactory = $objectManager->get('\Magento\Catalog\Model\CategoryFactory');
+$categoryHelper = $objectManager->get('\Magento\Catalog\Helper\Category');
+$categoryRepository = $objectManager->get('\Magento\Catalog\Model\CategoryRepository');
+ 
+$categoryId = 7; // YOUR CATEGORY ID
+$category = $categoryFactory->create()->load($categoryId);
+ 
+$categoryProducts = $category->getProductCollection()
+                             ->addAttributeToSelect('*');
+                             
+foreach ($categoryProducts as $product) {
+    //print_r($product->getData());
+    // printing category name and url
+    echo $product->getName() . ' - ' . $product->getProductUrl() . '<br />';
+}
+
+*/
+?>
+
+
+
+
+<?php
+
+
+
+
+/*
+$_helper    = $this->helper('catalog/output');
+$_category  = $this->getCurrentCategory();
+$_imgHtml   = '';
+if ($_imgUrl = $_category->getImageUrl()) {
+    if ( $_SERVER['REQUEST_URI'] == '/wellness-packages/' ) {
+		$_imgHtml .= '<div class="headerImageSeoContainer wellness-packages">';
+		$_imgHtml .= '<h1><strong>Wellness</strong> Packages</h1>';
+		$_imgHtml .= '<h2>Selected by experts to fit your needs</h2>';
+	}
+	$_imgHtml .= '<p class="category-image"><img src="'.$_imgUrl.'" alt="'.$this->escapeHtml($_category->getName()).'" title="'.$this->escapeHtml($_category->getName()).'" /></p>';
+	if ( $_SERVER['REQUEST_URI'] == '/wellness-packages/' ) {
+		$_imgHtml .= '</div>';
+	}
+	
+    $_imgHtml = $_helper->categoryAttribute($_category, $_imgHtml, 'image');
+}
+?>
+
+<style>
+    .wellness_package .col-md-6{margin-top:35px;}
+    .container.e-subscribe {margin-top: 46px;}
+</style>
+<div class="headerImageContainer clearfix">
+
+    <?php if($_imgUrl): ?>
+        <?php echo $_imgHtml ?>
+        <?php endif; ?>
+
+    <div class="page-title category-title">
+        <?php if($this->IsRssCatalogEnable() && $this->IsTopCategory()): ?>
+            <a href="<?php echo $this->getRssLink() ?>" class="link-rss"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
+            <?php endif; ?>
+        <h1><?php echo $_helper->categoryAttribute($_category, $_category->getMetaTitle(), 'meta_title') ?></h1>
+    </div>
+
+    <?php if($_description=$this->getCurrentCategory()->getDescription()): ?>
+        <div class="category-description std">
+            <?php echo $_helper->categoryAttribute($_category, $_description, 'description') ?>
+        </div>
+        <?php endif; ?>
+</div>
+
+
+<div class="container"">
+
+    <div class="row wellness_package">
+    <? $collection = $_category->getProductCollection()   
+        ->setOrder('name', 'ASC')
+        ->addAttributeToSelect('name')        
+        ->addAttributeToSelect('url_key') ; ?>
+    <? foreach ( $collection as $product ) :
+
+    ?>
+
+    <div class="col-md-6">
+        <a href="<?=$_category->getUrl($_category) . $product->getUrlKey()?>/">
+            <img style="width:100%" src="/media/catalog/product/<?= Mage::getModel('catalog/product')->load($product->getId())->getMediaGalleryImages()->getItemByColumnValue('label','category image')->getFile();  ?>" alt="<?=$product->getName()?>" title="<?=$product->getName()?>">
+        </a>
+    </div>
+    
+    <? endforeach; ?>
+
+    <div>
+</div>
+
+
+*/
+

@@ -1,0 +1,256 @@
+<?php
+/**
+*
+* Do not edit or add to this file if you wish to upgrade the module to newer
+* versions in the future. If you wish to customize the module for your
+* needs please contact us to https://www.milople.com/contact-us.html
+*
+* @category    Ecommerce
+* @package     Milople_Recurringandsubscriptionpayments
+* @copyright   Copyright (c) 2017 Milople Technologies Pvt. Ltd. All Rights Reserved.
+* @url         https://www.milople.com/magento-2-extensions/recurring-and-subscription-payments-m2.html
+*
+**/
+ ?>
+ 
+ <style type="text/css">
+ 
+ .product-options-bottom .btn-group.addtocart{float: none;}
+ 
+    .product-pricing{
+        display: none;
+    }
+    .recurring{
+        background: #fff;
+        border: 1px solid transparent;
+        padding: 0;
+        margin-top: 0;
+    }
+    .recurring .rsp-subscription{
+        margin: 15px 0px;
+    }
+    #recurring-options{
+        display:block !important;
+    }
+    .white_content {
+        border:none; 
+        position: relative; 
+        margin-bottom: 0; 
+        float: none;
+        background: #fff;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        padding:0;
+    }
+    .recurring .rsp-subscription {
+        margin: 0px 0px 5px;
+    }
+    .or{
+        display:none;
+    }
+    select#subscription_options {
+        width: 100% !important;
+        height: 30px;
+        margin-top: 10px;
+        padding-left: 9px;
+    }
+    .autoShip {
+        color: #0171ac;
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+    i.fa.info {
+        line-height: 21px;
+        float:none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        cursor:pointer;
+    }
+    .content .message div.top {
+        font-size: 24px;
+    }
+    
+    .content .point-titles {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .message {
+        margin-bottom: 16px;
+    } 
+    .top {
+        margin-bottom: 16px;
+    }
+    .autoship_help .modal-header {
+        padding: 0;
+        border-bottom: none;
+    }
+    .autoship_help .modal-img-line{width: 100%;height: 30px;}
+    .modal-logo {
+        position: absolute;
+        width: 150px;
+        left: 20px;
+        top: 11px;
+    }
+    .autoship_help .modal-content {border-radius: 0;}
+    .addtocart {
+        margin-top: 0px;
+    }
+    .autoshiplogo {
+        max-width: 80%;
+        margin: 60px auto 3px;
+    }
+    .autoship_popup_header {
+        font-size: 25px;
+        text-align: center;
+        padding: 0px 25px 10px;
+        font-weight: 100;
+    }
+    .autoship_help li {
+        list-style: initial;
+        color: #5c523e;
+        font-weight: bold;
+    }
+    .autoship_help ul{margin-left:20px;}
+   .autoship_help .modal-body {padding: 42px;}
+   .autoship_help_link{
+         margin-top: 20px;
+        font-weight: bold;
+        color: #0171ad !important;
+  }
+  .autoship_help_link a{text-decoration:none;}
+  .autoship_help h3,.autoship_help p{color: #584e37;}
+  .autoship_help p{font-weight: bold;}
+  .rsp-subscription{display:none;}
+  select#milople_rsp_type {border: 1px solid #958e7c;padding: 0;}
+  select#milople_rsp_type option { padding-left: 20px;color:#0072b1;}
+  select#milople_rsp_type option:hover:before {
+    font-family: FontAwesome;
+    content: "\f0da";
+    display: inline-block;
+    position: absolute;
+    left: 5px;
+    margin-top: 3px;
+    color:#0072b1;
+}
+    select#milople_rsp_type option:nth-child(odd){
+        background-color:#ece9e6;
+    }
+
+</style>
+ 
+ 
+ 
+<?php
+$helper = $this->helper;
+$recurring_helper = $this->recurring_helper;
+$datetime = $this->localeDate;
+$controller = $block->getRequest()->getControllerName();
+$subscription_type = '' ;
+$_product =$this->getProduct();
+$symbol =$this->getSymbol();
+$plans_product = $this->getPlanProducts()->load($_product->getId(),'product_id');
+$plans = $this->getPlan()->getCollection()->addFieldToFilter('plan_id',$plans_product->getPlanId());
+$_loggedIn = $this->isRegisteredCustomer();
+$dateToFormat = $datetime->date();
+$subscription_start_date =  date_format($dateToFormat,"m/d/Y");
+if($controller=='cart')  // Update product page
+ {
+	  $quote = $this->cart->getQuote()->getAllVisibleItems();	
+	  $url_value = $this->getRequest()->getParams();
+	  $item_id_pass = $url_value['id'];
+	  foreach ($quote as $item) 
+	  {
+		 if($item_id_pass == $item->getItemId())
+		 {
+			 $infoBuyRequest = $item->getOptionByCode('info_buyRequest');
+			 $buyRequest = new \Magento\Framework\DataObject(unserialize($infoBuyRequest->getValue()));	
+			 $subscription_type = $buyRequest->getMilopleSubscriptionType();
+			 $subscription_start_date = $buyRequest->getMilopleSubscriptionStartDate();
+		 }
+	  }
+ }
+$isavailable = $recurring_helper->isAvailableTo();
+$customer_group = $recurring_helper->allowedToSpecificCustomerGroups();
+$groupId = 0;
+if($_loggedIn)
+{
+	$groupId = $this->session->getCustomer()->getGroupId(); 
+}
+if ($helper->canRun()) 
+{
+	if($recurring_helper->isEnabled())
+	{	
+		if ($plans->count()>0):
+			$planid = 0;
+			foreach($plans as $plan)
+			{
+				$planid=$plan->getPlanId();
+				$isnormal=$plan->getIsNormal();
+			}
+			$planStatus=  $recurring_helper->getTempPlanStatus($plans);
+			$_planTemp  = $this->getPlan()->load($planid);
+			if(($isavailable ==1 ||( ($isavailable ==2 )&& $_loggedIn) ||($isavailable == 3  && in_array($groupId,$customer_group))) && $_planTemp->getPlanStatus()==1): 
+			?>
+			
+			<section class="subscriptionBox">
+			
+					<?php  if($isnormal==1): ?>
+					
+					<div class="white_content">
+
+						<div class="autoShip">
+							<label class="switch">
+							  <input type="checkbox">
+							  <span class="slider_btn round"></span>
+							</label> SAVE 5% with Auto Ship   <i class="fa fa-info-circle info" data-toggle="modal" data-target="#autoShip" ></i>
+							<br class="visible-sm">
+						</div>
+						
+					</div>
+					
+					<?php else: ?>
+						<p data-url='<?php echo $this->_urlInterface->getUrl('recurringandsubscriptionpayments/helptooltip')  ?>' style="visibility: hidden;"></p>
+					<?php endif; ?>
+					
+					
+					<div class="rsp-subscription">
+						<select name="milople_select_subscription_type" class="milople_select_subscription_type" style="width:160px;" size="4">
+							<?php $type = $this->getTerms()->getCollection()->addFieldToFilter('plan_id',$planid);?>
+							<option class="offswitch" value="-1" selected="selected"></option>
+							 <?php foreach ($type as $item): ?>
+								<option value="<?php echo $item->getId()?>" <?php echo $subscription_type == $item->getId() ?'selected="selected"':''?> ><?php echo $item->getLabel() ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<input type="hidden" name="subscription" value="0" class="subscriptionInput" />
+					<input type="hidden" name="milople_subscription_type" value="-1" class="milople_subscription_type" />
+					<input type="hidden" name="milople_subscription_type_label" class="milople_subscription_type_label" value=""/>
+					
+			</section>
+			
+			<?php endif; // Check availability and logging IF?>
+		<?php endif; //Plan > 0
+	} // Recurring Enabled IF
+} // Can RuN IF  ?>
+<input type="hidden" name='product_type' value='<?php echo $_product->getTypeId() ?>'  />
+<input type="hidden" name='product_price' value='<?php echo $_product->getPrice() ?>'  />
+<input type="hidden" name='symbol' value='<?php echo $symbol ?>' />
+
+<script>
+	// Assign date to date picker on load
+	require(["jquery"], function(jQuery) {
+		jQuery(document).ready(function(){
+		  var start_date='<?php echo $subscription_start_date ; ?>';
+			if(jQuery('#milople_subscription_start_date').length>0){
+		 	document.getElementById("milople_subscription_start_date").value = start_date;
+			}
+		  <?php if($isnormal==0): ?>
+			fullsubscriptionChecked(0);
+				jQuery("#subscription").trigger("click");
+			<?php endif; ?>
+		});
+	});
+</script>

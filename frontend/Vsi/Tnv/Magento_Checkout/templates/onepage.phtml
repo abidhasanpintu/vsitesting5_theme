@@ -1,0 +1,341 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+?>
+
+
+<style>
+/*
+#co-payment-form #checkout-payment-method-load .payment-group .payment-method:last-child{display: none;};
+*/
+#authorizenet_acceptjs_cc_type_exp_div{margin-top: 45px;}
+#authorizenet_acceptjs_cc_type_cvv_div label.label{vertical-align: text-bottom;}
+
+div.field[name="billingAddressauthorizenet_acceptjs.fax"]{display: none;}
+label.label[for="newsletter-subscribe"] span{ font-size: 14px; color: #958e7c; margin-left: -6px; }
+</style>
+<script>
+	require(['jquery'], function($) {
+		jQuery(document).ready(function(){
+			
+			
+			/* Select authorizenet in default */
+			var isActivePayment = true;
+			setInterval(function(){
+				if(isActivePayment){
+					if(jQuery('#co-payment-form #checkout-payment-method-load .payment-group .payment-method').length){
+						jQuery('#co-payment-form #checkout-payment-method-load .payment-group .payment-method').each(function(key,val){
+							if(jQuery(this).find('.payment-method-title input.radio').attr('id')=='authorizenet_acceptjs'){
+								if(!jQuery(this).hasClass('_active')){
+									jQuery(this).addClass('_active');
+									jQuery(this).find('.payment-method-title input.radio').attr("checked",true);
+									jQuery(this).find('.payment-method-title input.radio').prop("checked", true);
+									jQuery(this).find('.payment-method-title input.radio').trigger("click");
+									isActivePayment = false;
+								}
+							}
+							/* Hide Authorize.net Direct Post Method*/
+							if(jQuery(this).find('.payment-method-title input.radio').attr('id')=='authorizenet_directpost'){
+								jQuery(this).hide();
+							}
+							
+						});
+					}
+				}
+			},1000);
+			
+			/*
+			var seassonItem = sessionStorage.getItem("shipping_method");
+			if(seassonItem != null){
+				jQuery(".table-checkout-shipping-method input[value=" + seassonItem + "]").trigger('click');
+			}
+			*/
+			
+			
+		});
+	});
+</script>
+
+
+
+
+
+
+<div id="checkout" data-bind="scope:'checkout'" class="checkout-container">
+    <div id="checkout-loader" data-role="checkout-loader" class="loading-mask" data-mage-init='{"checkoutLoader": {}}'>
+        <div class="loader">
+            <img src="<?= /* @escapeNotVerified */ $block->getViewFileUrl('images/loader-1.gif') ?>"
+                 alt="<?= /* @escapeNotVerified */ __('Loading...') ?>"
+                 style="position: absolute;">
+        </div>
+    </div>
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <script type="text/x-magento-init">
+        {
+            "#checkout": {
+                "Magento_Ui/js/core/app": <?= /* @escapeNotVerified */ $block->getJsLayout() ?>
+            }
+        }
+    </script>
+    <script>
+        window.checkoutConfig = <?= /* @escapeNotVerified */ $block->getSerializedCheckoutConfig() ?>;
+        // Create aliases for customer.js model from customer module
+        window.isCustomerLoggedIn = window.checkoutConfig.isCustomerLoggedIn;
+        window.customerData = window.checkoutConfig.customerData;
+    </script>
+    <script>
+        require([
+            'mage/url',
+            'Magento_Ui/js/block-loader'
+        ], function(url, blockLoader) {
+            blockLoader("<?= /* @escapeNotVerified */ $block->getViewFileUrl('images/loader-1.gif') ?>");
+            return url.setBaseUrl('<?= /* @escapeNotVerified */ $block->getBaseUrl() ?>');
+        })
+    </script>
+	
+	<!-- Custom Code for shipping methods -->
+	<script>
+		requirejs([
+			'jquery'
+		], function($){
+			jQuery(document).on('change', '#co-shipping-form input, #co-shipping-form select', function(){
+				
+				
+				/*
+				require([
+					'jquery',
+					'Magento_Checkout/js/model/quote',
+					'Magento_Checkout/js/model/shipping-service',
+					'Magento_Checkout/js/model/shipping-rate-registry',
+					'Magento_Checkout/js/model/shipping-rate-processor/customer-address',
+					'Magento_Checkout/js/model/shipping-rate-processor/new-address',
+				], function($, quote, shippingService, rateRegistry, customerAddressProcessor, newAddressProcessor) {
+					
+					
+					
+					//$('#target').on('click', function(e) {
+						var address = quote.shippingAddress();
+						// clearing cached rates to retrieve new ones
+						rateRegistry.set(address.getCacheKey(), null);
+						var type = quote.shippingAddress().getType();
+						if (type) {
+							customerAddressProcessor.getRates(address);
+						} else {
+							newAddressProcessor.getRates(address);
+						}
+						
+					//});
+					
+				});
+				*/
+				
+				
+				
+				
+			});
+			
+			
+		});
+	</script>
+	
+	<!-- UPDATE ADDRESS BY ZIP CODE -->
+	<script>
+        require([
+            'jquery'
+        ], function($) {
+			
+			$(document).on('blur','input[name="postcode"]',function(){
+				
+				jQuery('body').trigger('processStart');
+				var country = "US";
+				var zip = $(this).val();
+				
+				$.getJSON('/fix/address/ziptoaddress?country=' + country + '&zip=' + zip,function(data){
+				    
+				    jQuery('body').trigger('processStop');
+				    
+					if(data){
+						if(data.city){
+							$('input[name="city"]').val(data.city);
+							$('input[name="city"]').trigger('keyup');
+						}
+						if(data.state){
+							$('select[name="region_id"] option').filter(function () { return $(this).html() == data.state; }).prop('selected', true);
+							$('select[name="region_id"]').trigger('change');
+						}
+					}
+				});
+				
+			});
+			
+			
+			var isRender = true;
+			setInterval(function(){
+				
+				if(jQuery('#checkoutSteps input[name="firstname"]').length && isRender){
+					jQuery('#checkoutSteps input, #checkoutSteps select').each(function(){
+						jQuery(this).attr('autocomplete','random');
+					});
+					isRender = false;
+				}
+				
+			},500);
+			
+			
+        });
+		
+    </script>
+    
+    
+    
+    <script>
+        require(['jquery'], function() {
+    	    jQuery(document).ready(function(){
+    	        var isLine2 = true;
+    	        setInterval(function(){
+    	            if(isLine2){
+    	                if(jQuery('div.field[name="shippingAddress.street.0"]').length){
+    	                    jQuery('div.field[name="shippingAddress.street.0"]').after('<label class="label" style="margin-top:-5px; position: absolute"><span>Street Address: Line 2</span></label>');
+    	                    isLine2 = false;
+    	                }
+    	            }
+    	        },1000);
+    	        
+    	    });
+        });
+    </script>
+    
+    
+	
+	<script>
+	
+        require([
+            'jquery',
+			'Magento_Customer/js/customer-data'
+        ], function($,customerData) {
+			
+			jQuery(document).on('submit','#update_summary',function(e){
+				e.preventDefault();
+				var datastring = jQuery("#update_summary").serialize();
+				 //jQuery('body').trigger('processStart');
+				jQuery.ajax({
+					type: "POST",
+					url: jQuery(this).attr('action'),
+					data: datastring,
+					showLoader: true,
+					success: function(data) {
+						/* Minicart reloading */
+						 customerData.reload('customer');	
+						 data = jQuery.parseJSON(data);
+						 if(data.succcess == '1'){
+							jQuery('#ajax_res').html('<br><p class="subtotal"><span class="label">Cart Subtotal:</span><span class="cartSubtotal"><span class="price">'+data.cartTotal+'</span></span><br><span class="label">Discount:</span><span class="cartDiscount"><span class="price">'+data.cartDiscount+'</span></span><br><span class="label">Grand Total:</span><span class="grandTotal"><span class="price">'+data.grandTotal+'</span></span></p>');
+						 }
+						 
+
+	 
+						 jQuery('body').trigger('processStop');
+					},
+					error: function() {
+						alert('Unable to update cart item!');
+					}
+				});
+			});	
+			
+			
+		jQuery(window).on('load',function(){
+			    
+			    var is_ajax_res = false;
+			    
+			    setInterval(function(){
+			    
+    			    if(is_ajax_res==false && jQuery('#ajax_res').length){
+        			    jQuery.ajax({
+        					type: "GET",
+        					url: '/fix/checkout/',
+        					//data: datastring,
+        					//showLoader: true,
+        					success: function(data) {
+        						/* Minicart reloading */
+        						 customerData.reload('customer');	
+        						 data = jQuery.parseJSON(data);
+        						 if(data.succcess == '1'){
+        							jQuery('#ajax_res').html('<br><p class="subtotal"><span class="label">Cart Subtotal:</span><span class="cartSubtotal"><span class="price">'+data.cartTotal+'</span></span><br><span class="label">Discount:</span><span class="cartDiscount"><span class="price">'+data.cartDiscount+'</span></span><br><span class="label">Grand Total:</span><span class="grandTotal"><span class="price">'+data.grandTotal+'</span></span></p>');
+        						 }
+        						 //jQuery('body').trigger('processStop');
+        					},
+        					error: function() {
+        						//alert('Unable to update cart item!');
+        					}
+        				});
+        				
+        				is_ajax_res = true;
+    			    }
+    				
+			    },1000);
+			    
+			});
+			
+        });
+		
+    </script>
+    
+    
+    <script>
+    require(['jquery'], function() {
+	    jQuery(document).on('blur','input[name="street[0]"],input[name="street[1]"]',function(){
+	        var txt = jQuery(this).val().split(' ');
+	        var hasPO = false;
+	        var current=0;
+	        jQuery.each( txt, function( index, value ) {
+	            current++;
+	            var txtVal = value.toLowerCase();
+	            if(txtVal=="po" || txtVal == "p.o" || txtVal =="po." || txtVal=="p.o."){
+	                if( txt.length > current ){if(!isNaN(txt[current+1])){ hasPO = true; }}
+	                //if( txt.length >= current){if(txt[current].toLowerCase() == 'box'){ hasPO = true; }}
+	            }
+	            
+	            if(txtVal=="box" || txtVal == "box."){
+    				if( txt.length > current ){if(!isNaN(txt[current])){ hasPO = true; }}
+    			}
+	            
+	        });
+	        
+	        if(hasPO){
+	            alert('We do not allow po boxes for shipping address, please use a different address with a mailbox for your shipping address');
+	        }
+	        
+	        
+	    });
+    });
+    </script>
+    
+	
+</div>
+<?php echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Checkout::autoship_popup.phtml")->toHtml();?>
+
+
+<script>
+    require(['jquery'], function() {
+	    jQuery(document).on('click','.billing-address-same-as-shipping-block input[name="billing-address-same-as-shipping"]',function(){
+	        jQuery('.checkout-billing-address input, .checkout-billing-address select').each(function(key,val){
+	            jQuery(this).attr('autocomplete','random');
+	        });
+	    });
+    });
+</script>
+
+<script>
+    require(['jquery'], function() {
+	    jQuery(document).on('click','.checkout-billing-address .action-cancel',function(){
+	            jQuery('html,body').animate({
+                scrollTop: jQuery(".payment-methods").offset().top},
+                'slow');
+
+	    });
+    });
+</script>
+

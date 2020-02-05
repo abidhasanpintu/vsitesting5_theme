@@ -1,0 +1,221 @@
+<?php // Get current product
+
+	$product = $block->getProduct();
+	$_helper = $this->helper('Magento\Catalog\Helper\Output'); 
+	
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+	$ingredients = $objectManager->get('Vsi\Ingredient\Model\Item');
+	$ingredients = $ingredients->loadByProduct($product->getID());
+
+
+	$filterAnimalType = trim(strtolower($product->getAttributeText('animal_type')));
+
+?>
+
+<div id="supplement">
+
+	<? if($filterAnimalType == 'dog' || $filterAnimalType == 'horse'): ?>
+	<? if (
+		$product->getServingSize() ||
+		$product->getServingsPerContainer() ||
+		count($ingredients) ||
+		$product->getOtherIngredients() ||
+		$product->getContainsIngredients() ||
+		$product->getRecommendation() ||
+		$product->getDisclaimer()
+	): ?>
+	<h3><?php echo __('Product Facts') ?></h3>
+	<? endif; ?>
+	<? if ( $product->getServingSize() ) :?>
+	<div class="servingSize">Serving Size: <?=$product->getServingSize();?></div> 
+	<? endif; ?>
+
+	<? if ( $product->getServingsPerContainer()): ?>
+	<div class="servingsPerContainer">Servings Per Container: <?=$product->getServingsPerContainer();?></div>
+	<? endif; ?>
+	<? if ( count($ingredients) ) :?>
+		<table>
+		<tr>
+			<th><strong><u>Ingredient GUARANTEED ANALYSIS PER TEASPOON</u></strong></th>
+			<th></th>
+			<th></th>
+		</tr>
+		<? foreach ( $ingredients as $ingredient ): ?>
+			<tr>
+				<td><?= $ingredient->getTitle() ?></td>
+				<td><?= $ingredient->getAmountPerServing() ?></td>
+				<td><?= $ingredient->getDailyValue() ?></td>            
+			</tr>
+			<tr>
+				<td colspan="3"><?= $ingredient->getDescription() ?></td>
+			</tr>
+		<? endforeach; ?>
+		</table>
+	<? endif; ?>
+	<? if ( $product->getOtherIngredients() ): ?>
+	<div class="otherIngredients"><b>Other Ingredients</b>: <?=$product->getOtherIngredients();?></div> 
+	<? endif; ?>
+	<br>
+	<? if ( $product->getRecommendation() ): ?>
+	<div class="active-ingredients"><b>ACTIVE INGREDIENTS</b>:
+	<?php echo $product->getData('behind_the_bottle_description'); ?></div> 
+	<? endif; ?>
+
+	
+
+	<? if ( $product->getData('ingredients_inactive') ): ?>
+	<div class="active-ingredients"><b>INACTIVE INGREDIENTS</b>:<?php echo $product->getData('ingredients_inactive'); ?></div>
+	<? endif; ?>
+
+	<? if ( $product->getData('ingredients_cautions') ): ?>
+	<div class="active-ingredients"><b>CAUTIONS</b>:<?php echo $product->getData('ingredients_cautions'); ?></div>
+	<? endif; ?>
+
+    <? if ( $product->getRecommendation() ): ?>
+	<div class="active-ingredients"><b>DIRECTION FOR USE</b>: <?=$product->getRecommendation();?></div> 
+	<? endif; ?>
+	
+	<? if ( $product->getData('ingredients_warnings') ): ?>
+	<div class="active-ingredients"><b>WARNINGS</b>:<?php echo $product->getData('ingredients_warnings'); ?></div>
+	<? endif; ?>
+
+	<? if ( $product->getContainsIngredients() ): ?>
+	<div class="otherIngredients"><b>NO</b>: <?=$product->getContainsIngredients();?></div> 
+	<? endif; ?>
+	
+	<div class="ExtraDisclaimer">Terry Naturally Animal Health brand products contain natural and other premium ingredients.</div> 
+	
+	<? if ( $product->getDisclaimer() ): ?>
+	<div class="disclaimer"><?php echo $_helper->productAttribute($product, $product->getDisclaimer(), 'disclaimer') ?></div> 
+	<? endif; ?>
+
+	<?php elseif($filterAnimalType == 'tnvca'): ?>
+		<? $ingredients =  Mage::getModel('ingredient/ingredient')->loadByProduct($product->getID()); ?>
+	<? if (
+		$product->getServingSize() ||
+		$product->getServingsPerContainer() ||
+		count($ingredients) ||
+		$product->getOtherIngredients() ||
+		$product->getContainsIngredients() ||
+		$product->getRecommendation() ||
+		$product->getDisclaimer()
+	): ?>
+
+	<!-- <h3><?php echo __('Product Facts') ?></h3> -->
+	<? endif; ?>
+	<? if ( $product->getServingSize() ) :?>
+	<div class="servingSize">Serving Size: <?=$product->getServingSize();?></div> 
+	<? endif; ?>
+
+	<? if ( $product->getServingsPerContainer()): ?>
+	<div class="servingsPerContainer">Servings Per Container: <?=$product->getServingsPerContainer();?></div>
+	<? endif; ?>
+	<? if ( count($ingredients) ) :?>
+		<table>
+		<tr>
+			<th><strong><u>Ingredient GUARANTEED ANALYSIS PER TEASPOON</u></strong></th>
+			<th></th>
+			<th></th>
+		</tr>
+		<? foreach ( $ingredients as $ingredient ): ?>
+			<tr>
+				<td><?= $ingredient->getTitle() ?></td>
+				<td><?= $ingredient->getAmountPerServing() ?></td>
+				<td><?= $ingredient->getDailyValue() ?></td>            
+			</tr>
+			<tr>
+				<td colspan="3"><?= $ingredient->getDescription() ?></td>
+			</tr>
+		<? endforeach; ?>
+		</table>
+	<? endif; ?>
+	<? if ( $product->getOtherIngredients() ): ?>
+		<div class="otherIngredients"><b>Other Ingredients</b>: <?=$product->getOtherIngredients();?></div> 
+	<? endif; ?>
+	<br>
+	<? if ( $product->getRecommendation() ): ?>
+	<div class="active-ingredients"><b>ACTIVE INGREDIENTS</b>:
+	<?php echo $product->getData('behind_the_bottle_description'); ?></div> 
+	<? endif; ?>
+	
+	<br>
+	<? if ( $product->getRecommendation() ): ?>
+	<div class="active-ingredients"><b>RECOMMENDATIONS</b>: <?=$product->getRecommendation();?></div> 
+	<? endif; ?>
+	<br>
+	<? if ( $product->getData('ingredients_inactive') ): ?>
+	<div class="active-ingredients"><b>INACTIVE INGREDIENTS</b>:<?php echo $product->getData('ingredients_inactive'); ?></div>
+	<? endif; ?>
+
+	<? if ( $product->getData('ingredients_cautions') ): ?>
+	<div class="active-ingredients"><b>CAUTIONS</b>:<?php echo $product->getData('ingredients_cautions'); ?></div>
+	<? endif; ?>
+	<br>
+	<? if ( $product->getData('ingredients_warnings') ): ?>
+	<div class="active-ingredients"><b>WARNINGS</b>:<?php echo $product->getData('ingredients_warnings'); ?></div>
+	<? endif; ?>
+	<br>
+	<? if ( $product->getContainsIngredients() ): ?>
+	<div class="otherIngredients"><b>NO</b>: <?=$product->getContainsIngredients();?></div> 
+	<? endif; ?>
+	<br>
+	<? if ( $product->getDisclaimer() ): ?>
+	<div class="disclaimer"><?php echo $_helper->productAttribute($product, $product->getDisclaimer(), 'disclaimer') ?></div> 
+	<? endif; ?>
+
+	<? else: ?>
+
+	<? if (
+		$product->getServingSize() ||
+		$product->getServingsPerContainer() ||
+		count($ingredients) ||
+		$product->getOtherIngredients() ||
+		$product->getContainsIngredients() ||
+		$product->getRecommendation() ||
+		$product->getDisclaimer()
+	): ?>
+	<h3><?php echo __('Supplement Facts') ?></h3>
+	<? endif; ?>
+	<? if ( $product->getServingSize() ) :?>
+	<div class="servingSize">Serving Size: <?=$product->getServingSize();?></div>
+	<? endif; ?>
+	<? if ( $product->getServingsPerContainer()): ?>
+	<div class="servingsPerContainer">Servings Per Container: <?=$product->getServingsPerContainer();?></div>
+	<? endif; ?>
+	<? if ( count($ingredients) ) :?>
+		<table>
+		<tr>
+			<th>Ingredient</th>
+			<th>Amount/Serving</th>
+			<th>Daily Value</th>
+		</tr>
+		<? foreach ( $ingredients as $ingredient ): ?>
+			<tr>
+				<td><?= $ingredient->getTitle() ?></td>
+				<td><?= $ingredient->getAmountPerServing() ?></td>
+				<td><?= $ingredient->getDailyValue() ?></td>            
+			</tr>
+			<tr>
+				<td colspan="3"><?= $ingredient->getDescription() ?></td>
+			</tr>
+		<? endforeach; ?>
+		</table>
+	<? endif; ?>
+	<? if ( $product->getOtherIngredients() ): ?>
+	<div class="otherIngredients"><b>Other Ingredients</b>: <?=$product->getOtherIngredients();?></div> 
+	<? endif; ?>
+	<br/>
+	<? if ( $product->getContainsIngredients() ): ?>
+	<div class="otherIngredients"><b>No</b>: <?=$product->getContainsIngredients();?></div> 
+	<? endif; ?>
+	<br>
+	<div class="ExtraDisclaimer">Terry Naturally brand products contain natural and other premium ingredients.</div> 
+	<br>
+	<? if ( $product->getRecommendation() ): ?>
+	<div class="disclaimer"><b>Recommendations</b>: <?=$product->getRecommendation();?> aaaa</div> 
+	<? endif; ?>
+	<? if ( $product->getDisclaimer() ): ?>
+	<div class="disclaimer"><?php echo $_helper->productAttribute($product, $product->getDisclaimer(), 'disclaimer') ?></div> 
+	<? endif; ?>
+	<? endif; ?>
+</div>

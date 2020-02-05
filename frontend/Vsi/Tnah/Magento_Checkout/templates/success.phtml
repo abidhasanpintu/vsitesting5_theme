@@ -1,0 +1,219 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php /** @var $block \Magento\Checkout\Block\Onepage\Success */ ?>
+</br></br>
+
+<style>
+.note_ul li{list-style: disc !important;margin-bottom: 0px !important;}
+.feed_msg {font-weight: bold;font-size: 16px;}
+.isLo {margin-top: 20px;}
+</style>
+    
+<div class="container">
+    <div class="row">
+<div class="col-md-6">
+<div class="checkout-success">
+    <?php if ($block->getOrderId()):?>
+	    <h2 class="sub-title">YOUR ORDER HAS BEEN RECEIVED</h2>
+        <?php if ($block->getCanViewOrder()) :?>
+            <p style="font-weight: bold;color: #000;font-size: 16px;"><?= __('Your order number is: %1.', sprintf('<a href="%s" class="order-number" style="color: #000;"><strong>%s</strong></a>', $block->escapeHtml($block->getViewOrderUrl()), $block->escapeHtml($block->getOrderId()))) ?></p>
+        <?php  else :?>
+            <p style="font-weight: bold;color: #000;font-size: 16px;"><?= __('Your order # is: <span>%1</span>.', $block->escapeHtml($block->getOrderId())) ?></p>
+        <?php endif;?>
+            <p><?= /* @escapeNotVerified */ __('We\'ll email you an order confirmation with details and tracking info.') ?></p>
+    
+    
+    <p style="font-size: 16px;">Please Note: </p>
+    <ul class="note_ul">
+        <li>All orders are processed within 24-48 hours during business days (Monday-Friday).</li>
+        <li>Orders are not processed on weekends or holidays. </li>
+		<li>Orders placed on weekends or holidays will be processed the following business day. </li>
+        <li>Please allow 7-10 business days from ship date for delivery when choosing standard shipping.</li>
+    </ul>
+    
+    <p>If you have any questions about your order please contact us at <a href="mailto:info@terrynaturallyvitamins.com">info@terrynaturallyvitamins.com</a> 
+    or call us at 877-575-5155 Monday – Friday, 8am–4pm CST.</p>
+    <?php endif;?>
+
+    <?= $block->getAdditionalInfoHtml() ?>
+
+    <div class="actions-toolbar">
+        <div class="primary">
+            <a class="action primary continue" href="<?= /* @escapeNotVerified */ $block->getContinueUrl() ?>"><span><?= /* @escapeNotVerified */ __('Continue Shopping') ?></span></a>
+        </div>
+    </div>
+</div>
+<br/><br/>
+</div>
+
+
+<div class="col-md-6">
+<div class="new_account">
+<style>.padding_input {margin: 0 0 10px; width: 300px !important;}</style>
+	<?php
+		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		$customer = $objectManager->get('Magento\Sales\Model\Order')->load($block->getOrderId(),'increment_id');
+		$customerEmail = $customer->getCustomerEmail();
+		$customerFirstName = $customer->getCustomerFirstname();
+		$customerLastName = $customer->getCustomerLastname();
+		
+		$currentCustomer = $objectManager->get('Magento\Customer\Model\Session');
+		if (!$currentCustomer->isLoggedIn()):
+	 ?>
+    <p class="isLo">Want to track your order, and checkout more quickly next time? Just enter a password and we will create an account for you!</p>
+	<form id="create_new_account" method="post" action="/customer/account/createpost/">
+		<input type="hidden" name="error_url" value="">
+		<input type="hidden" name="success_url" value="">
+		<input type="hidden" name="form_key" value="<?= $block->getFormKey() ?>" >
+		<input type="hidden" name="firstname" value="<?= $customerFirstName; ?>">
+		<input type="hidden" name="lastname" value="<?=$customerLastName; ?>">
+		<input type="hidden" name="email" value="<?= $customerEmail; ?>">
+		<input type="hidden" name="is_subscribed" value="1">
+		<input class="padding_input" type="password" name="password" placeholder="Password"><br>
+		<input class="padding_input" type="password" name="password_confirmation" placeholder="Confirm Password" ><br>
+		
+		<div>
+		    
+		    <!-- Code start for google Recaptcha  -->
+            <?php 
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+            $recaptcha = $objectManager->create('MSP\ReCaptcha\Model\Config');
+             ?>
+             
+            <style>
+            #g-recaptcha-response {
+                display: block !important;
+                position: absolute;
+                margin: -78px 0 0 0 !important;
+                width: 302px !important;
+                height: 76px !important;
+                z-index: -999999;
+                opacity: 0;
+            }
+            </style>
+            	<div id="recaptcha_div"></div>
+            	<script>
+                  var onloadCallback = function() {
+                    grecaptcha.render('recaptcha_div', {
+                      'sitekey' : <?php echo "'".$recaptcha->getPublicKey()."'";?>
+                    });
+                  };
+            	  
+            	window.onload = function() {
+            		var recaptcha = document.querySelector('#g-recaptcha-response');
+            
+            		if(recaptcha) {
+            			recaptcha.setAttribute("required", "required");
+            		}
+            	};
+                </script>	
+                <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>  
+            
+            <!-- Code end for google Recaptcha  -->
+		    
+		</div>
+		<br/>
+		<button type="submit" class="action primary">Create an Account</button>
+	</form>
+	<?php else: ?>
+	
+<h3 style="text-transform: uppercase;">Something we can do better? <br />  We'd love to hear about it!</h3>
+<br />
+<form id="feedback_form" method="post" >
+    <div class="form-group">
+        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required/>
+    </div>
+    <div class="form-group">
+        <textarea name="msg" placeholder="Enter message" required></textarea>
+    </div>
+    <div class="form-group">        
+      <p class="text-right feeds">
+        <button id="submit_feedback" type="submit" class="button action primary">Submit</button>
+      </p>
+      
+    </div>
+  </form>
+<?php endif; ?>	
+
+<div class="feed_msg"></div>
+	
+<script>
+require(['jquery'],function($){
+      
+      jQuery(document).ready(function(e) {
+
+        jQuery("#feedback_form").submit(function(e) {
+			e.preventDefault();
+            jQuery.post("/fix/feedback", jQuery("#feedback_form").serialize())
+            // Serialization looks good: name=textInNameInput&&telefon=textInPhoneInput etc
+            .done(function(data) {
+                if (data == 1) {
+                    jQuery(".feed_msg").text("Successfully send your feedback.");   
+                } else {
+                    jQuery(".feed_msg").text("Sorry your feedback not send.");
+                }
+            });
+          
+        })
+    });
+        
+});
+</script>
+	
+	
+	<br/><br/><br/>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<?php
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+	$checkoutSession = $objectManager->create('Magento\Checkout\Model\Session');
+	$salesOrder = $objectManager->create('Magento\Sales\Model\Order');
+
+	$orderId = $checkoutSession->getLastRealOrderId();
+	$order = $salesOrder->loadByIncrementId($orderId);
+	$total = number_format((float)$order->getSubtotal(), 2, '.', '');
+?>
+
+<!-- Google Code for TNV Checkout Success Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 861078583;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "hxxFCIqdjG8Qt4jMmgM";
+var google_conversion_value = <?php echo $total; ?>;
+var google_conversion_currency = "USD";
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/861078583/?value=<?php echo $total; ?>&amp;currency_code=USD&amp;label=hxxFCIqdjG8Qt4jMmgM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+
+
+<script language='JavaScript1.1' async src='//pixel.mathtag.com/event/js?mt_id=1082778&mt_adid=160329&v1=&v2=&v3=&s1=&s2=&s3='></script>
+<script language='JavaScript1.1' async src='//pixel.mathtag.com/event/js?mt_id=1189899&mt_adid=160329&mt_exem=&mt_excl=&v1=&v2=&v3=&s1=&s2=&s3='></script>
+
+<script>
+    fbq('track', 'Purchase', {currency: 'USD', value: <?php echo $total; ?>});
+</script>
+
+<!-- Use of this pixel is subject to the Amazon ad specs and policies at http://www.amazon.com/b/?&node=7253015011 -->
+<script type='text/javascript'>var _pix = document.getElementById('_pix_id_2a399e8e-6040-d096-48f0-b3b169b994ea');if (!_pix) { var protocol = '//'; var a = Math.random() * 1000000000000000000; _pix = document.createElement('iframe'); _pix.style.display = 'none'; _pix.setAttribute('src', protocol + 's.amazon-adsystem.com/iu3?d=generic&ex-fargs=%3Fid%3D2a399e8e-6040-d096-48f0-b3b169b994ea%26type%3D30%26m%3D1&ex-fch=416613&ex-src=https://www.terrynaturallyvitamins.com/&ex-hargs=v%3D1.0%3Bc%3D2095520730301%3Bp%3D2A399E8E-6040-D096-48F0-B3B169B994EA' + '&cb=' + a); _pix.setAttribute('id','_pix_id_2a399e8e-6040-d096-48f0-b3b169b994ea'); document.body.appendChild(_pix);}</script><noscript> <img height='1' width='1' border='0' alt='' src='https://s.amazon-adsystem.com/iui3?d=forester-did&ex-fargs=%3Fid%3D2a399e8e-6040-d096-48f0-b3b169b994ea%26type%3D30%26m%3D1&ex-fch=416613&ex-src=https://www.terrynaturallyvitamins.com/&ex-hargs=v%3D1.0%3Bc%3D2095520730301%3Bp%3D2A399E8E-6040-D096-48F0-B3B169B994EA' /></noscript>

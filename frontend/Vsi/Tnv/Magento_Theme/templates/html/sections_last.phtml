@@ -1,0 +1,307 @@
+<?php //
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php //
+
+/**
+*  General template for displaying group of blocks devided into sections
+*/
+
+$group = $block->getGroupName();
+$groupCss = $block->getGroupCss();
+$groupBehavior = $block->getGroupBehaviour() ? $block->getGroupBehaviour() : '{"tabs":{"openedState":"active"}}';
+?>
+
+<script type="text/javascript">
+	require(['jquery','js/slick.min'],function($){
+		require(['js/bootstrap.min','js/design','js/slick.min']);
+	});
+</script>
+
+<!-- Header Sections Starts -->
+<header>
+    <nav id="nav_bar" class="navbar navbar-default navbar-fixed-top">
+        
+      <div class="container-fluid">
+
+        <div class="text-right">
+          <div class="user-menu">
+        	<a href="/shipping-information"><img class="free-shipping" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/free-shipping.png"/> </a>
+        	<p class="menu-right" style="margin: 0;">
+        	    <?php // if (Mage::getSingleton('customer/session')->isLoggedIn()){echo 'Welcome, '.Mage::getSingleton('customer/session')->getCustomer()->getFirstname();} ?></p>
+            
+            <div id="nav_icons1">
+        			<ul class="nav navbar-nav navbar-right bottom_nav_icon">
+        				<li class="nav_location"><a title="Store Locator" href="/locator"><i class="fa fa-map-marker " aria-hidden="true"></i></a></li>
+        				<li class="header-minicart">
+        				    <?php
+							/*
+                            	echo $this->getLayout()
+                                      ->createBlock('Magento\Framework\View\Element\Template')
+                                      ->setTemplate('Magento_Checkout::cart/minicart.phtml')
+                                      ->toHtml();
+                                      
+                                      .'/web/img/TN-Chat-IconSm.png'
+							*/
+                             ?>
+							 <?php  echo $this->getChildHtml('minicart') ?>
+
+        				</li>
+        				<li class="nav_user hidden-xs">
+        				    <a title="My Account" href="#" id="header-account-btn" class="has_dropdown" ><i class="fa fa-user" aria-hidden="true"></i></a>
+							<div class="dropdown dropdown_content">
+								<div class="dropdown-menu account_link" style="">
+									<div class="links">
+										<ul>
+											<li class="first"><a href="/customer/account/" title="My Account">My Account</a></li>
+											<li id="my-custom-id"><a href="/customer/account/login/" title="Create Account">Create Account</a></li>
+											<li><a href="/customer/account/login/" title="Log In">Auto Ship Manager</a></li>
+											<li class=" last" id="OrderHistory"><a href="/customer/account/login/" title="Order History">Order History</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+        				    
+        				</li>
+        				<li class="nav_help"><a href="#" class="has_dropdown">Help? <i class="fa fa-caret-down"></i></a>
+        				
+        					<div class="dropdown dropdown_content" >
+        					  <ul class="dropdown-menu">
+        						<li><a id="liveChat" href="javascript:void(Tawk_API.toggle())">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Chat-IconSm.png" alt="help" /> Live Chat</h4>
+        							   <p class="help_subline"> Mon-Fri &#9679; 8am - 5pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Start Here</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a  href="mailto:Info@TerryNaturallyVitamins.com">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Email-IconSm.png" alt="Email" /> Email</h4>
+        								<p class="help_subline">Info@TerryNaturallyVitamins.com</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Send Message</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a href="tel:1-877-575-5155">
+        						   <div class="row">
+        							 <div class="col-xs-5">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Call-IconSm.png" alt="Call" /> Call</h4>
+        							    <p class="help_subline"> Mon-Fri &#9679; 8am - 5pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-7">1-877-575-5155</div>
+        						   </div>
+        						  </a>
+        						</li>
+        					  </ul>
+        					</div>
+        					
+        					
+        				</li>
+        				<li class="visible-xs">
+        					<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        						<span class="sr-only">Toggle navigation</span>
+        						<span class="icon-bar"></span>
+        						<span class="icon-bar"></span>
+        						<span class="icon-bar"></span>
+        					</button>
+        				</li> 
+        				
+        			</ul>
+        		</div>
+              
+          </div>
+        </div>
+  
+  
+        
+        
+		<div id="nav_icons">
+			<ul class="nav navbar-nav navbar-right top_nav_icon mobile_icons">
+			<li class="header-minicart">
+        				    <?php
+							/*
+                            	echo $this->getLayout()
+                                      ->createBlock('Magento\Framework\View\Element\Template')
+                                      ->setTemplate('Magento_Checkout::cart/minicart.phtml')
+                                      ->toHtml();
+                                      
+                                      .'/web/img/TN-Chat-IconSm.png'
+							*/
+                             ?>
+							 <?php  echo $this->getChildHtml('minicart') ?>
+        				    
+        				</li>
+			<li class="nav_user">
+				    <a href="#" id="header-account-btn" class="has_dropdown"><i class="fa fa-user" aria-hidden="true"></i></a>
+				    <div class="dropdown dropdown_content">
+						<div class="dropdown-menu account_link" style="">
+						    <div class="links">
+                                <ul>
+                                    <li class="first"><a href="/customer/account/" title="My Account">My Account</a></li>
+                                    <li id="my-custom-id"><a href="/customer/account/login/" title="Create Account">Create Account</a></li>
+                                    <li><a href="/customer/account/login/" title="Log In">Auto Ship Manager</a></li>
+                                    <li class=" last" id="OrderHistory"><a href="/customer/account/login/" title="Order History">Order History</a></li>
+                                </ul>
+                            </div>
+						</div>
+				    </div>
+			 </li>
+                
+            <li class="nav_location"><a title="Store Locator" href="/locator">
+                <i class="fa fa-map-marker " aria-hidden="true"></i></a>
+            </li>
+
+			</ul>
+		</div>
+	
+
+		<!-- Brand and toggle get grouped for better mobile display -->
+		
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="<?php echo $this->getUrl('') ?>"><img src="<?php echo $block->getLayout()->getBlock('logo')->getLogoSrc() ?>"/></a>
+		</div>
+
+
+		<ul class="nav navbar-nav navbar-right drop main-nav">
+
+            <li><a href="#" class="has_dropdown">SHOP <i class="fa fa-caret-down"></i></a>
+                <?php  echo $this->getLayout()->createBlock('Magento\Framework\View\Element\Template')->setTemplate('Magento_Catalog::product/mega-menu.phtml')->toHtml(); ?>
+               
+            </li>
+                
+            <li><a href="#" class="has_dropdown">PROMOTIONS <i class="fa fa-caret-down"></i></a>  
+					<?php
+					echo $this->getLayout()
+					->createBlock('Magento\Cms\Block\Block')
+					->setBlockId('tnv_promotion_nav')
+					->toHtml();
+					?>
+            </li>
+             
+            <li ><a href="/customer-favorites/">CUSTOMER FAVORITES</a></li>
+            <li><a href="/new-products/">NEW PRODUCTS</a></li> 
+            <li><a href="/blog/">BLOG</a></li>
+            
+            <div class="nav_search_box">
+
+                <?php
+                /*	echo $this->getLayout()
+                          ->createBlock('Magento\Framework\View\Element\Template')
+                          ->setTemplate('Magento_Search::form.mini.phtml')
+                          ->toHtml();  */
+                 ?>
+        		<?php  echo $this->getChildHtml('topSearch') ?>
+
+        	</div>
+        </ul>
+       
+        
+        <div class="moble-menu container">
+            <ul class="firstl_ul">
+                <li class="searh_box2"> 
+                <div class="nav_search_box">
+                    <?php
+                    	echo $this->getLayout()
+                              ->createBlock('Magento\Framework\View\Element\Template')
+                              ->setTemplate('Magento_Search::form.mini.phtml')
+                              ->toHtml();
+                     ?>
+        		    <?php // echo $this->getChildHtml('topSearch') ?>
+        	    </div>
+                </li>
+                        				<li class="nav_help"><a href="#" class="has_dropdown">Help? <i class="fa fa-caret-down"></i></a>
+        				
+        					<div class="dropdown dropdown_content" >
+        					  <ul class="dropdown-menu">
+        						<li><a id="liveChat" href="javascript:void(Tawk_API.toggle())">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Chat-IconSm.png" alt="help" /> Live Chat</h4>
+        							   <p class="help_subline"> Mon-Fri &#9679; 8am - 5pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Start Here</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a  href="mailto:Info@TerryNaturallyVitamins.com">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Email-IconSm.png" alt="Email" /> Email</h4>
+        								<p class="help_subline">Info@TerryNaturallyVitamins.com</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Send Message</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a href="tel:1-877-575-5155">
+        						   <div class="row">
+        							 <div class="col-xs-5">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Call-IconSm.png" alt="Call" /> Call</h4>
+        							    <p class="help_subline"> Mon-Fri &#9679; 8am - 5pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-7">1-877-575-5155</div>
+        						   </div>
+        						  </a>
+        						</li>
+        					  </ul>
+        					</div>
+        				</li>
+        			<li class="item-bars collapse_btn"><i style="font-size:24px" class="fa">&#xf0c9;</i></li>
+                
+            </ul>
+            
+             
+          	<ul class="nav navbar-nav  main-nav2">
+    
+                <li><a href="#" class="has_dropdown">SHOP <i class="fa fa-caret-down"></i></a>
+                    <?php  echo $this->getLayout()->createBlock('Magento\Framework\View\Element\Template')->setTemplate('Magento_Catalog::product/mega-menu.phtml')->toHtml(); ?>
+                </li>
+                    
+                <li><a href="#" class="has_dropdown">PROMOTIONS <i class="fa fa-caret-down"></i></a>
+                    <?php
+					echo $this->getLayout()
+					->createBlock('Magento\Cms\Block\Block')
+					->setBlockId('tnv_promotion_nav')
+					->toHtml();
+					?>
+
+                </li>
+                 
+                <li ><a href="/customer-favorites/">CUSTOMER FAVORITES</a></li>
+                <li><a href="/new-products/">NEW PRODUCTS</a></li> 
+                <li><a href="/blog/">BLOG</a></li>
+
+            </ul>
+     
+            
+        
+        </div>
+        
+        
+        
+      </div><!-- /.container-fluid -->
+    </nav>
+</header> <!-- Header Sections End -->
+
+<!-- Banner Section starts -->
+<?php echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::banners.phtml")->toHtml() ?>
+<!-- Banner Section Ends -->

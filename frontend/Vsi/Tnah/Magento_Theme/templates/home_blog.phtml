@@ -1,0 +1,106 @@
+<style>
+
+#articlePost .article_title h2 {margin: 10px 0 5px; line-height:17px;}
+#articlePost .article_title h2 a {color: #938e7f;font-weight: bold;font-size: 17px;text-transform: initial;}
+#articlePost .article_img h3 {color: #689c18;line-height: 1;margin: 24px 0;font-size: 14px;}
+#articlePost .article_img h3 a{ color: #5a523f; }
+#articlePost .article_img h3 a:nth-child(1){ font-weight: bold;}
+.a_text_right {float:right;color: #76b51a !important;font-weight: bold;}
+.read_more_img{ vertical-align: top; border: none !important; margin: -18px 0 5px 7px; position: relative; z-index: 999;}	
+#articlePost .post-item {padding-bottom: 20px;}
+#articlePost a:hover, #articlePost a:focus {color: #7ea244;text-decoration: none;}
+h2.sunflower:after {left: 50%;transform: translate(-50%, -50%);width: 95%;}
+
+@media only screen and (max-width: 600px) {
+  .read_more_img {width: 35px;}
+  .sunflower:after {margin-top: 21px;}
+  .thumbnail_image {width: 100%;}
+}
+
+@media only screen and (max-width: 540px) {
+	.read_more_img {width: 25px;margin: -8px 0 5px 7px;}
+	#articlePost .article_img h3 a{  white-space: nowrap;font-size: 12px;}
+}
+
+@media only screen and (min-width: 1800px) {
+	.container {width: 1600px;}
+	iframe{height:308px !important;}
+	img.thumbnail_image {width: 100%;}
+
+}
+
+
+</style>
+
+
+<?php
+
+
+$ids = explode(',',$block->getData('id'));
+if(count($ids) < 2 ){
+    $dataArray = array(array('finset'=>$ids[0]));
+}else{
+    $dataArray = array(array('finset'=>$ids[0]),array('finset'=>$ids[1]));
+}
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$current_website_id =  $storeManager->getStore()->getWebsiteId();
+
+$collection = $objectManager->get('Vsi\Blog\Model\Post')->getCollection();
+$collection-> addFieldToFilter('status', 0);
+$collection->addFieldToFilter('website_id',array(array('finset'=>$current_website_id),array('finset'=>0)));
+$collection->addFieldToFilter('post_id',$dataArray); 
+
+$author = $objectManager->get('Vsi\Blog\Model\Author');
+$category = $objectManager->get('Vsi\Blog\Model\Category');
+$catList_collection = $objectManager->get('Vsi\Blog\Model\Category')->getCollection();
+
+
+
+?>
+
+<section id="articlePost">
+	<div class="container">
+	<h2 class="sunflower"> <span>From Our Blog</span></h2>
+    		<div class="row">
+                    <?php 
+                           foreach ($collection as $item) :
+                                $sec = strtotime($item->getData('date')); 
+                                $date = date("F d, Y", $sec); ?>
+                              <div class="col-md-6">
+                                   <div class="post-item">
+                        
+                                       <div class="article_img">
+                                            <?php if($item->getData('image')): ?>
+                                            <a href="<?= '/blog/post/?slug='.$item->getData('slug'); ?>">
+                                               <img class="thumbnail_image" src="<?= $item->getData('image'); ?>"/>
+                                            </a>
+                                            <?php endif; ?>
+                                            
+                                          
+											<div class="row">
+												<div class="col-xs-7">
+													<div class="article_title">
+													   <h2><a href="<?= '/blog/post/?slug='.$item->getData('slug'); ?>"><?= $item->getData('title'); ?></a></h2>   
+													</div>
+												</div>
+												<div class="col-xs-5">
+														<h3>
+															<a class="a_text_right" href="<?= '/blog/post/?slug='.$item->getData('slug'); ?>">READ MORE<img class="read_more_img" src="/pub/media/images/ellipse.png">
+															</a>
+														</h3>
+												</div>
+											</div>
+
+	   
+										   
+                                       </div>
+                                       <div class="article_description">
+                                           <?= $item->getData('short_description'); ?>
+                                       </div>
+                                   </div> 
+                               </div>
+                     <?php endforeach; ?>
+     		</div>
+	</div>
+</section>

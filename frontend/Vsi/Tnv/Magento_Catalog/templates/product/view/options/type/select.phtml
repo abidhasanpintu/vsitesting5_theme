@@ -1,0 +1,59 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+?>
+<?php /* @var $block \Magento\Catalog\Block\Product\View\Options\Type\Select */ ?>
+<?php
+$_option = $block->getOption();
+$class = ($_option->getIsRequire()) ? ' required' : '';
+?>
+<?php
+    $_product = $block->getProduct();
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+	$customOptions = $objectManager->get('Magento\Catalog\Model\Product\Option')->getProductOptionCollection($_product);
+	$finalOption = array();
+	$hasOptions = false;
+	foreach($customOptions as $optionKey => $optionVal){
+		$hasStock = false;
+		$availabaleOptions = array();
+		foreach($optionVal->getValues() as $valuesKey => $valuesVal){
+			//if($valuesVal->getInStock() == '0'){continue;};
+			$availabaleOptions[] = $valuesVal;
+			$hasStock = true;
+		}
+		if($hasStock){
+			$finalOption[] = array(
+				'id' => $optionVal->getId(),
+				'value' => $availabaleOptions //$optionVal->getValues()
+			);
+			$hasOptions = true;
+		}
+	}
+?>
+<div class="field<?= /* @escapeNotVerified */ $class ?>">
+    <div class="control">
+        <?php
+			$optStr = "";
+			foreach($finalOption as $optionKey => $optionVal){
+				$optStr .= "<div class='custom-options'>";
+					$optStr .= "<select class='selectpicker' name='options[".$optionVal['id']."]'>";
+					foreach($optionVal['value'] as $valuesKey => $valuesVal) {
+					    
+					    if($valuesVal->getInStock()=='0'){
+					        $optStr .= "<option value='".$valuesVal->getId()."' disabled='disabled'>$".number_format($valuesVal->getPrice(),2).'&nbsp;&nbsp;&nbsp;'.$valuesVal->getTitle()." Out of Stock</option>";
+					    }else{
+					        $optStr .= "<option value='".$valuesVal->getId()."'>$".number_format($valuesVal->getPrice(),2).'&nbsp;&nbsp;&nbsp;'.$valuesVal->getTitle()."</option>";
+					    }
+					    
+					}
+				$optStr .= "</select></div>";
+			}
+			echo($optStr);
+		?>
+    </div>
+</div>

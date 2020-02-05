@@ -1,0 +1,446 @@
+<?php //
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php //
+
+/**
+*  General template for displaying group of blocks devided into sections
+*/
+
+$group = $block->getGroupName();
+$groupCss = $block->getGroupCss();
+$groupBehavior = $block->getGroupBehaviour() ? $block->getGroupBehaviour() : '{"tabs":{"openedState":"active"}}';
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$currentCustomer = $objectManager->create('Magento\Customer\Model\Session');
+//$currentCustomer = $objectManager->create('Magento\Customer\Helper\Session\CurrentCustomer');
+
+?>
+
+<script type="text/javascript">
+	require(['jquery','js/slick.min'],function($){
+		require(['js/bootstrap.min','js/design','js/slick.min','js/lazysizes.min']);
+	});
+</script>
+
+<style>
+    .page-layout-1column .toolbar-products{display: none;}
+</style>
+
+
+<!-- Header Sections Starts -->
+<header>
+    <nav id="nav_bar" class="navbar navbar-default navbar-fixed-top">
+        
+      <div class="container-fluid">
+
+        <div class="text-right">
+          <div class="user-menu">
+        	<a href="/shipping-information"><img class="free-shipping lazyload" data-src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/free-shipping.png"/> </a>
+        	<p class="menu-right hidden-xs" style="margin: 0;" data-bind="scope: 'customer'">
+        	    <?php // if (Mage::getSingleton('customer/session')->isLoggedIn()){echo 'Welcome, '.Mage::getSingleton('customer/session')->getCustomer()->getFirstname();} ?>
+                <!-- ko if: customer().fullname  -->
+                <span class="logged-in" data-bind="text: new String('<?= $block->escapeHtml(__('Welcome, %1!', '%1')) ?>').replace('%1', customer().firstname)"></span>
+                <!-- /ko -->    
+        	</p>
+            
+            <div id="nav_icons1">
+        			<ul class="nav navbar-nav navbar-right bottom_nav_icon">
+        				<li class="nav_location"><a title="Store Locator" href="/locator"><i class="fa fa-map-marker " aria-hidden="true"></i></a></li>
+        				<li class="header-minicart" id="minicartForDesktop">
+        				   
+        				</li>
+        				<li class="nav_user hidden-xs">
+        				    <a title="My Account" href="#" id="header-account-btn" class="has_dropdown" ><i class="fa fa-user" aria-hidden="true"></i></a>
+							<div class="dropdown dropdown_content">
+								<div class="dropdown-menu account_link" style="">
+									<div class="links">
+										<ul data-bind="scope: 'customer'">
+											<li class="first"><a href="/customer/account/" title="My Account">My Account</a></li>
+                                            <li class="header_account_link_list">
+												<!-- ko if: customer().fullname  -->
+                                                <a class= "header_account_link" href="<?php echo $this->getUrl("customer/account/logout");?>"><span data-bind="text: 'Log Out'"></span></a>
+												<!-- /ko -->
+												<!-- ko ifnot: customer().fullname  -->
+												<a href="/customer/account/login/" title="Create Account"><span data-bind="text: 'Create Account'"></span></a>
+												<!-- /ko -->
+                                            </li>
+                                            <!-- /ko -->
+											<li><a href="/sales/order/history/" title="Log In">Auto Ship Manager</a></li>
+											<li class=" last" id="OrderHistory"><a href="/sales/order/history/" title="Order History">Order History</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+        				    
+        				</li>
+        				<li class="nav_help"><a href="#" class="has_dropdown">Help? <i class="fa fa-caret-down"></i></a>
+        				
+        					<div class="dropdown dropdown_content" >
+        					  <ul class="dropdown-menu">
+        						<li><a id="liveChat" href="javascript:void(Tawk_API.toggle())">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Chat-IconSm.png" alt="help" /> Live Chat</h4>
+        							   <p class="help_subline"> Mon-Fri &#9679; 9am - 4pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Start Here</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a  href="mailto:Info@TerryNaturallyVitamins.com">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Email-IconSm.png" alt="Email" /> Email</h4>
+        								<p class="help_subline">Info@TerryNaturallyVitamins.com</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Send Message</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a href="tel:1-877-575-5155">
+        						   <div class="row">
+        							 <div class="col-xs-5">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Call-IconSm.png" alt="Call" /> Call</h4>
+        							    <p class="help_subline"> Mon-Fri &#9679; 9am - 4pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-7">1-877-575-5155</div>
+        						   </div>
+        						  </a>
+        						</li>
+        					  </ul>
+        					</div>
+        					
+        					
+        				</li>
+        				<li class="visible-xs">
+        					<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        						<span class="sr-only">Toggle navigation</span>
+        						<span class="icon-bar"></span>
+        						<span class="icon-bar"></span>
+        						<span class="icon-bar"></span>
+        					</button>
+        				</li> 
+        				
+        			</ul>
+        		</div>
+              
+          </div>
+        </div>
+  
+  
+        
+        
+		<div id="nav_icons">
+			<ul class="nav navbar-nav navbar-right top_nav_icon mobile_icons">
+			<li class="header-minicart" id="minicartForMobile">
+        				    <?php
+							/*
+                            	echo $this->getLayout()
+                                      ->createBlock('Magento\Framework\View\Element\Template')
+                                      ->setTemplate('Magento_Checkout::cart/minicart.phtml')
+                                      ->toHtml();
+                                      
+                                      .'/web/img/TN-Chat-IconSm.png'
+							*/
+                             ?>
+							<div id="moveableMiniCart">
+							<?php  echo $this->getChildHtml('minicart') ?>
+        				    </div>
+        				</li>
+			<li class="nav_user">
+				    <a href="#" id="header-account-btn" class="has_dropdown"><i class="fa fa-user" aria-hidden="true"></i></a>
+				    <div class="dropdown dropdown_content">
+						<div class="dropdown-menu account_link" style="">
+						    <div class="links">
+                                <ul data-bind="scope: 'customer'">
+									<li class="first"><a href="/customer/account/" title="My Account">My Account</a></li>
+									<li class="header_account_link_list">
+										<!-- ko if: customer().fullname  -->
+										<a class= "header_account_link" href="<?php echo $this->getUrl("customer/account/logout");?>"><span data-bind="text: 'Log Out'"></span></a>
+										<!-- /ko -->
+										<!-- ko ifnot: customer().fullname  -->
+										<a href="/customer/account/login/" title="Create Account"><span data-bind="text: 'Create Account'"></span></a>
+										<!-- /ko -->
+									</li>
+									<!-- /ko -->
+									<li><a href="/sales/order/history/" title="Log In">Auto Ship Manager</a></li>
+									<li class=" last" id="OrderHistory"><a href="/sales/order/history/" title="Order History">Order History</a></li>
+								</ul>
+                            </div>
+						</div>
+				    </div>
+			 </li>
+                
+            <li class="nav_location"><a title="Store Locator" href="/locator">
+                <i class="fa fa-map-marker " aria-hidden="true"></i></a>
+            </li>
+
+			</ul>
+		</div>
+	
+
+		<!-- Brand and toggle get grouped for better mobile display -->
+		
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="<?php echo $this->getUrl('') ?>"><img class="lazyload" data-src="<?php echo $block->getLayout()->getBlock('logo')->getLogoSrc() ?>"/></a>
+		</div>
+
+
+		<ul class="nav navbar-nav navbar-right drop main-nav">
+
+            <li><a href="#" class="has_dropdown">SHOP <i class="fa fa-caret-down"></i></a>
+                <?php  echo $this->getLayout()->createBlock('Magento\Framework\View\Element\Template')->setTemplate('Magento_Catalog::product/mega-menu.phtml')->toHtml(); ?>
+               
+            </li>
+                
+            <li><a href="#" class="has_dropdown">PROMOTIONS <i class="fa fa-caret-down"></i></a>  
+					<?php
+					echo $this->getLayout()
+					->createBlock('Magento\Cms\Block\Block')
+					->setBlockId('tnv_promotion_nav')
+					->toHtml();
+					?>
+            </li>
+             
+            <li ><a href="/customer-favorites/">CUSTOMER FAVORITES</a></li>
+            <li><a href="/new-products/">NEW PRODUCTS</a></li> 
+            <li><a href="/blog/">BLOG</a></li>
+            
+            <div class="nav_search_box">
+
+                <?php
+                /*	echo $this->getLayout()
+                          ->createBlock('Magento\Framework\View\Element\Template')
+                          ->setTemplate('Magento_Search::form.mini.phtml')
+                          ->toHtml();  */
+                 ?>
+        		<?php  echo $this->getChildHtml('topSearch') ?>
+
+        	</div>
+        </ul>
+       
+        
+        <div class="moble-menu container">
+            <ul class="firstl_ul">
+                <li class="searh_box2"> 
+                <div class="nav_search_box">
+                    <?php
+                    	echo $this->getLayout()
+                              ->createBlock('Magento\Framework\View\Element\Template')
+                              ->setTemplate('Magento_Search::form.mini.phtml')
+                              ->toHtml();
+                     ?>
+        		    <?php // echo $this->getChildHtml('topSearch') ?>
+        	    </div>
+                </li>
+                        				<li class="nav_help"><a href="#" class="has_dropdown">Help? <i class="fa fa-caret-down"></i></a>
+        				
+        					<div class="dropdown dropdown_content" >
+        					  <ul class="dropdown-menu">
+        						<li><a id="liveChat" href="javascript:void(Tawk_API.toggle())">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Chat-IconSm.png" alt="help" /> Live Chat</h4>
+        							   <p class="help_subline"> Mon-Fri &#9679; 9am - 4pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Start Here</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a  href="mailto:Info@TerryNaturallyVitamins.com">
+        						   <div class="row">
+        							 <div class="col-xs-6">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Email-IconSm.png" alt="Email" /> Email</h4>
+        								<p class="help_subline">Info@TerryNaturallyVitamins.com</p>
+        							 </div>
+        							 <div class="col-xs-6 text-right">Send Message</div>
+        						   </div>
+        						  </a>
+        						</li>
+        						
+        						<li><a href="tel:1-877-575-5155">
+        						   <div class="row">
+        							 <div class="col-xs-5">
+        								<h4 class="color-green"><img style="width: 30px;" src="<?php echo $block->getUrl('pub/Vsi/Tnv')?>img/TN-Call-IconSm.png" alt="Call" /> Call</h4>
+        							    <p class="help_subline"> Mon-Fri &#9679; 9am - 4pm CST</p>
+        							   <p>Office closed on weekends and holidays</p>
+        							 </div>
+        							 <div class="col-xs-7">1-877-575-5155</div>
+        						   </div>
+        						  </a>
+        						</li>
+        					  </ul>
+        					</div>
+        				</li>
+        			<li class="item-bars collapse_btn"><i style="font-size:24px" class="fa">&#xf0c9;</i></li>
+                
+            </ul>
+            
+             
+          	<ul class="nav navbar-nav  main-nav2">
+    
+                <li><a href="#" class="has_dropdown">SHOP <i class="fa fa-caret-down"></i></a>
+                    <?php  echo $this->getLayout()->createBlock('Magento\Framework\View\Element\Template')->setTemplate('Magento_Catalog::product/mega-menu.phtml')->toHtml(); ?>
+                </li>
+                    
+                <li><a href="#" class="has_dropdown">PROMOTIONS <i class="fa fa-caret-down"></i></a>
+                    <?php
+					echo $this->getLayout()
+					->createBlock('Magento\Cms\Block\Block')
+					->setBlockId('tnv_promotion_nav')
+					->toHtml();
+					?>
+                </li>
+                <li ><a href="/customer-favorites/">CUSTOMER FAVORITES</a></li>
+                <li><a href="/new-products/">NEW PRODUCTS</a></li> 
+                <li><a href="/blog/">BLOG</a></li>
+            </ul>
+        </div>
+      </div><!-- /.container-fluid -->
+	  
+
+
+    </nav>
+</header> <!-- Header Sections End -->
+		
+
+
+
+<!-- Banner Section starts -->
+<?php echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::banners.phtml")->toHtml() ?>
+<!-- Banner Section Ends -->
+
+<script>
+
+require(['jquery'],function($){
+    
+    var loadSize = function(){
+		var wid = jQuery(window).width();
+		if(wid<=767){
+			jQuery('#moveableMiniCart').detach().appendTo('#minicartForMobile');
+		}else{
+			jQuery('#moveableMiniCart').detach().appendTo('#minicartForDesktop');
+		}
+		
+		
+		var headerH = jQuery('header #nav_bar').height();
+		headerH = headerH - 12;
+		//console.log(headerH);
+		
+		if(wid<=944){
+		    
+		    jQuery('html>body').addClass('fixBodyMargin');
+		    jQuery('div#banner-slider-carousel').addClass('fixSliderMargin');
+		    jQuery('.catalog-category-view .category-view .category-image .image').addClass('fixZeroMargin');
+		    jQuery('.header_myacc_bacground.mt-025').addClass('fixZeroMargin');
+		    
+		    
+		    //jQuery('html>body').css('margin-top',headerH+'px !important');
+		    
+		    jQuery('body.fixBodyMargin').css('cssText', 'margin-top: '+ headerH+'px !important');
+		    jQuery('.fixSliderMargin').css('cssText', 'margin-top: 3px !important');
+		    jQuery('.fixZeroMargin').css('cssText', 'margin-top: 0px !important');
+		    
+		}else{
+		    
+		    jQuery('body.fixBodyMargin').removeAttr('style');
+		    jQuery('.fixSliderMargin').removeAttr('style');
+		    jQuery('.catalog-category-view .category-view .category-image .image').removeAttr('style');
+		    jQuery('.header_myacc_bacground.mt-025').removeAttr('style');
+		    
+		    jQuery('html>body').removeClass('fixBodyMargin');
+		    jQuery('div#banner-slider-carousel').removeClass('fixSliderMargin');
+		    jQuery('.catalog-category-view .category-view .category-image .image').removeClass('fixZeroMargin');
+		    jQuery('.header_myacc_bacground.mt-025').removeClass('fixZeroMargin');
+		    
+		}
+		
+	}
+    
+	jQuery(window).on('resize', function(){
+		loadSize();
+	});
+	
+	jQuery(document).ready(function(){
+		loadSize();
+	});
+	
+	
+});
+
+</script>
+
+<script type="text/javascript">
+
+require(['jquery','js/slick.min'],function($){
+		 
+	jQuery('#news_slideraaa').slick({
+	  dots: true,
+	  infinite: false,
+	  speed: 1000,
+	  slidesToShow: 3,
+	  slidesToScroll: 3,
+	  responsive: [
+		{
+		  breakpoint: 1200,
+		  settings: {
+			slidesToShow: 3,
+			slidesToScroll: 3,
+			infinite: true,
+			dots: false
+		  }
+		},
+		{
+		  breakpoint: 991,
+		  settings: {
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			dots: false
+		  }
+		},
+		{
+		  breakpoint: 768,
+		  settings: {
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			dots: false
+		  }
+		}
+	  ]
+	});
+	
+	
+
+});
+
+
+           
+</script>
+
+
+
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "customer": {
+                    "component": "Magento_Customer/js/view/customer"
+                }
+            }
+        }
+    }
+}
+</script>

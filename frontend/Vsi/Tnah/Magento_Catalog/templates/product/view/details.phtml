@@ -1,0 +1,85 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var \Magento\Catalog\Block\Product\View\Details $block */
+?>
+<style>
+@media only screen and (max-width: 810px) {
+	.product.data.items .item.title .switch {padding: 10px 10px !important;}
+}
+</style>
+
+<?php if ($detailedInfoGroup = $block->getGroupSortedChildNames('detailed_info', 'getChildHtml')):?>
+    <div class="product info detailed">
+        <?php $layout = $block->getLayout(); ?>
+		<!-- <div class="product data items" data-mage-init='{"tabs":{"openedState":"active"}}' >  -->
+        <div class="product data items"  >
+            <?php foreach ($detailedInfoGroup as $name):?>
+                <?php
+                    $html = $layout->renderElement($name);
+                    if (!trim($html)) {
+                        continue;
+                    }
+                    $alias = $layout->getElementAlias($name);
+                    $label = $block->getChildData($alias, 'title');
+                ?>
+
+                <div class="data item title"
+                     aria-labelledby="tab-label-<?= /* @escapeNotVerified */ $alias ?>-title"
+                     data-role="collapsible" id="tab-label-<?= /* @escapeNotVerified */ $alias ?>">
+                    <a class="data switch"
+                       tabindex="-1"
+                       data-toggle="switch"
+                       href="#<?= /* @escapeNotVerified */ $alias ?>"
+                       id="tab-label-<?= /* @escapeNotVerified */ $alias ?>-title">
+                        <?= /* @escapeNotVerified */ $label ?>
+                    </a>
+                </div>
+                <div class="data item content" id="<?= /* @escapeNotVerified */ $alias ?>" data-role="content">
+                    <?= /* @escapeNotVerified */ $html ?>
+                </div>
+		
+            <?php endforeach;?>
+        </div>
+    </div>
+<?php endif; ?>
+
+<script type="text/javascript">
+        require(['jquery', 'matchMedia', 'accordion'], function($, mediaCheck) {
+            var detailsTabs = $('.product.data.items');
+            mediaCheck({
+                media: '(min-width: 768px)',
+                // Switch to Desktop Version
+                entry: function () {
+                    detailsTabs.tabs({
+                        openedState: "active",
+                        collapsible: false
+                    });
+                },
+                // Switch to Mobile Version
+                exit: function () {
+                    detailsTabs.tabs({
+                        openedState: "active",
+                        collapsible: true,
+                        active: false
+                    });
+                }
+            });
+        })
+</script>
+<script type="text/javascript">
+        require(['jquery'], function($, mediaCheck) {
+            jQuery(document).ready(function(){
+                jQuery(".product-reviews-summary").prependTo(".extra-info");
+            });
+        });
+</script>
+
+
+
+

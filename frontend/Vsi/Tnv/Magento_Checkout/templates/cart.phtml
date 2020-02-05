@@ -1,0 +1,83 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+
+<style>
+/*.cart-summary strong.summary{display: none;}*/
+#block-shipping{display: none;}
+
+table.totals .mark{background: none;}
+
+@media screen and (max-width: 992px) {
+  div#checkoutBox {width: 100%;}
+}
+</style>
+<script>
+require(['jquery'], function() {
+    jQuery(document).ready(function(){
+        jQuery('div.cart-discount').before('<div id="checkoutBox" style="float:left; text-align: right;" class="cart-discount"></div>');
+        jQuery('#checkoutBox').append(jQuery('.cart-summary ul.checkout-methods-items').clone());
+    });
+});
+</script>
+
+<?php
+/**
+ * Shopping cart template
+ *
+ * @var $block \Magento\Checkout\Block\Cart
+ */
+
+if ($block->getItemsCount()) {
+    echo $block->getChildHtml('with-items');
+	 echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Checkout::cart/item/free_gift.phtml")->toHtml();
+} else {
+    echo $block->getChildHtml('no-items');
+}?>
+
+
+<?php echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Checkout::autoship_popup.phtml")->toHtml();?>
+
+<script>
+// ** * Code for autoship update * **/
+require(["jquery"], function(jQuery) {
+	
+	
+	jQuery(document).on('click','.ship_details',function(){
+		jQuery(".ship_details_div").hide();
+		jQuery(this).parent('.product-cart-info').children('.ship_details_div').toggle();
+		  jQuery(".close_trigger").click(function(){
+			 jQuery(".ship_details_div").hide();
+			});
+	});
+	
+	jQuery(document).on('click','.updatePeriod',function(){
+		
+		var opVal = {};
+		var itemid = jQuery(this).attr('data-item');
+		opVal['term'] = jQuery('#select_term_'+itemid).val();
+		jQuery(this).html('Processing...');
+		jQuery(this).attr('disabled','disabled');
+		jQuery.ajax({
+			url :'/autoship/index/updatecartproduct/id/'+itemid ,
+			type: "POST",
+			data: {options:opVal},
+			success: function(data){
+				//location.reload();
+			}
+		});
+		
+	});
+	
+	jQuery(document).on('blur','.form-cart input.qty',function(){
+		jQuery(this).closest('form').submit();
+	});
+	
+	
+});
+
+</script>
+

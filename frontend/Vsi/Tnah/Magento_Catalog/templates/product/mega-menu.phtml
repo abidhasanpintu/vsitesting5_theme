@@ -1,0 +1,132 @@
+
+
+<?php
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $catId = 6;  //Parent Category ID
+    $subCategory = $objectManager->create('Magento\Catalog\Model\Category')->load($catId);
+    $subCats = $subCategory->getChildrenCategories();
+    $_helper = $this->helper('Magento\Catalog\Helper\Output');
+    
+   // $countCategory = count($subCats);
+   
+    $countCategory = 8;
+  
+
+?>
+
+<div class="dropdown dropdown_content full_width" >
+	<div class="dropdown-menu">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9">
+					<div class="col-sm-4 color-blue">
+					    
+					    <ul class="title_dropdown hidden-xs">
+            		        <li  class="nav-item spcl_color1">
+            		            <a href="/products" class="nav-link">
+            		                ALL PRODUCTS
+            		            </a>
+            		        </li>
+            		        <li class="nav-item spcl_color2">
+            		            <a href="/categories/pet-health/" class="nav-link">
+            		                PET HEALTH <img class="pet_img lazyload" data-src="/pub/media/images/h_d.png" />
+            		            </a>
+            		        </li>
+            		        <li class="nav-item spcl_color3">
+            		            <a href="/wellness-packages" class="nav-link">
+            		                WELLNESS PACKAGES
+            		            </a>
+            		        </li>
+					    </ul>
+					    
+						
+					</div>
+                    
+     <?php if (count($subCats) > 0): ?>  
+     
+				<div class="col-sm-4">
+				    
+					  <ul class="hover-icon thumbanil_image">
+                         <?php $i=0; foreach ($subCats as $subcat) { $i++;
+                           if($i > $countCategory){ continue; }
+            
+                            $_category = $objectManager->create('Magento\Catalog\Model\Category')->load($subcat->getId());
+                            $subcaturl = $subcat->getUrl();
+
+                            if ($_imgUrl = $_category->getThumbnail()) {
+                                $Url =  "/pub/media/catalog/category/".$_imgUrl;
+                            } ?>
+                            <li>
+                             <a data-thumbnail="<?php /////////echo $Url;?>" href="<?php echo $subcaturl ?>" > <?php echo $subcat->getName(); ?> </a>
+                            </li>
+
+                        <?php } ?>
+					  </ul> 
+                      
+				</div>
+				
+				
+				<div class="col-sm-4">
+				  <ul class="hover-icon thumbanil_image">
+                         <?php $i=0; foreach ($subCats as $subcat) { $i++;
+                              if($i < $countCategory+1){ continue; }
+                            $_category = $objectManager->create('Magento\Catalog\Model\Category')->load($subcat->getId());
+                            $subcaturl = $subcat->getUrl();
+                           // $_imgHtml = '';
+
+                            if ($_imgUrl = $_category->getThumbnail()) {
+                                $Url =  "/pub/media/catalog/category/".$_imgUrl;
+                            } ?>
+                            <li>
+                               <a data-thumbnail="<?php echo $Url;?>" href="<?php echo $subcaturl ?>" > <?php echo $subcat->getName(); ?> </a>
+                            </li>
+
+                        <?php } ?>
+					  </ul>
+				</div>
+    <?php endif; ?> 
+    
+    	<div class="col-sm-4 color-blue">
+		
+            
+            <ul class="title_dropdown hidden-sm hidden-md hidden-lg">
+		        <li  class="nav-item spcl_color1">
+		            <a href="/products" class="nav-link">
+		                ALL PRODUCTS
+		            </a>
+		        </li>
+		        <li class="nav-item spcl_color2">
+		            <a href="/categories/pet-health/" class="nav-link">
+		                PET HEALTH <img class="pet_img lazyload" data-src="/pub/media/images/h_d.png" />
+		            </a>
+		        </li>
+		        <li class="nav-item spcl_color3">
+		            <a href="/wellness-packages" class="nav-link">
+		                WELLNESS PACKAGES
+		            </a>
+		        </li>
+		    </ul>
+            
+		</div>
+	</div>
+    
+    
+    
+    
+				<div class="col-md-3">
+				    <div class="visible-md visible-lg">
+					    <img class="dropdown_right_image right_thumbnail lazyload"  dat-src="/pub/media/images/all_products.png"  />
+				    </div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+

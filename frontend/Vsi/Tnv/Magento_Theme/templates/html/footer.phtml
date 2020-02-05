@@ -1,0 +1,728 @@
+<style>
+    .shipping .mark .label, #co-shipping-method-form .label{ padding: 0px; font-size: 100%; font-weight: normal; color: #958e7c; }
+    #co-shipping-method-form .label{line-height: 20px; padding-left: 5px;}
+    aside.modal-popup.confirm._show {z-index: 9999 !important;}
+    .modals-overlay{z-index: 8888 !important;}
+    
+    footer div.footer-bg{padding-top: 0px;}
+    .email-subscribe.e-subscribe-container{margin-top: 0px;}
+    .col-main.clearfix{margin-bottom: 0px;}
+    .columns .column.main{padding-bottom: 0px;}
+    
+    .catalogsearch-result-index .page-title { font-size: 30px; margin-bottom: 10px; }
+    .catalogsearch-result-index .page-title-wrapper {background: #f1f1e6 !important;}
+    footer.page-footer {margin-top: 0px;}
+    
+    .stockists-window .stockists-title{margin-bottom: 0px;}
+    
+    form.form-create-account, form.forget{margin-bottom: 25px;}
+    #ajax_res .subtotal .label{font-size: 100%;}
+    
+    .subscriptionBox select.milople_select_subscription_type { padding: 0; width: 185px !important; overflow-y: hidden; background: none; }
+    .milople_select_subscription_type option:nth-child(odd) { background-color: #ece9e6; }
+    .subscriptionBox option { color: #0072b1; padding: 6px 0px 6px 20px; margin: 0px; font-size: 13px; }
+    
+   .fotorama__stage__frame .fotorama__img {max-width: 80%;top: 40%;}
+   .catalog-product-view .media {margin-bottom: -40px;}
+   .toolbar.review-toolbar .page {padding-top: 0px !important;}    
+     @media screen and (max-width: 768px) {
+       .sl_bottom {margin-bottom: 0px;margin-left: 20px;}
+    }
+    
+    .customer-account-edit .field.password-info{display: none;}
+    
+    .nav_search_box .store .price{ display: none; }
+    .modal-popup._inner-scroll .modal-inner-wrap{ max-height: 75% !important; }
+    .product-add-form .autoShip .fa-info-circle{ display: inline-block !important; }
+    
+    
+</style>
+
+
+<?php
+	echo $this->getLayout()
+          ->createBlock('Magento\Newsletter\Block\Subscribe')
+          ->setTemplate('Magento_Newsletter::subscribe.phtml')
+          ->toHtml();
+ ?>
+
+
+<?php 
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();  
+$request = $objectManager->get('Magento\Framework\App\Request\Http');  
+$ref = $request->getParam('ref');
+
+?>
+<div style="display:none;"><?php echo $ref; ?></div>
+ 
+<?php if($ref == "friend"): ?>
+    
+            <script>
+                require(['jquery'],function($){
+                    jQuery(document).ready(function() {           
+                                jQuery( '.refBtn' ).trigger( 'click');   
+                         });	
+                });
+            </script>
+
+<?php endif; ?>
+
+
+ 
+ <footer  class="footer-bg">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-sm-4 hidden-sm hidden-xs footer-logo">
+			<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_footer_1')->toHtml() ?>
+					</div>
+            <div class="col-md-3 col-sm-3 quick-contact-main"><?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_footer_2')->toHtml() ?></div>
+            <div class="col-md-2 col-sm-6 hidden-xs"><div class="f-logo"><?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_footer_3')->toHtml() ?></div></div>
+            <div class="col-md-2 col-sm-3 connect-main"><?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_footer_4')->toHtml() ?></div>
+			
+            <div class="col-md-2 col-sm-12 hidden-sm hidden-md hidden-lg"><div class="f-logo"><?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_footer_3')->toHtml() ?></div></div>
+            <div class="col-md-3 col-sm-6 footer-logo sm-margin"><?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_footer_5')->toHtml() ?></div>
+			
+            <div class="col-md-2 col-sm-6 hidden-lg hidden-md footer-logo sm-margin"><?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_footer_1')->toHtml() ?></div>
+        </div>
+      </div>
+     </footer>
+    <section class="copyright">
+        <h4>© 2019 Terry Naturally Vitamins | Green Bay, WI 54311</h4>
+        <p>*THESE STATEMENTS HAVE NOT BEEN EVALUATED BY THE FOOD AND DRUG ADMINISTRATION. THESE PRODUCTS ARE NOT INTENDED TO DIAGNOSE, TREAT, CURE OR PREVENT ANY DISEASE </p>
+    </section> 
+    <?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_international_orders')->toHtml() ?>
+    <?php // echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('tnv_international_orders')->toHtml() ?>
+    <?php // echo $this->getLayout()->createBlock('core/template')->setTemplate('referfriend/referfriend.phtml')->toHtml(); ?>
+    
+    
+    
+
+    
+ 
+   <!-- Modal autoship_help Start-->  
+  <div class="modal fade autoship_help" id="autoShip" role="dialog">
+                <div class="modal-dialog">
+                
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <img class="modal-img-line" src="/pub/media/images/top-border.png" alt="hdr"/>
+                      <img class="modal-logo" src="/pub/media/images/logo.png">
+                    </div>
+                    <div class="modal-body">
+                      
+                      <div class="content">
+              <div class="autoshiplogo">
+                   <p class="text-center"><img class="lazyload" data-src="/pub/media/images/AutoShip-PopupArt.png" alt="Auto Ship &amp; Save 5%" style="margin-bottom:20px;"></p>
+                </div>
+                <h3 class="autoship_popup_header">Never Run Out of<br> Your Favorite Products Again!</h3>
+                <p>With our Auto Ship Subscription Program, enjoy the convenience of having products delivered to you monthly. You'll also enjoy a 5% discount on all future auto ship orders!</p>
+                <ul>
+                    <li>YOU set the schedule</li>
+                    <li>Easily add or remove products</li>
+                    <li>Skip shipments anytime</li>
+                    <li>Cancel anytime, no hassles</li>
+                    <li>Receive email reminders</li>
+                    <li>Save 5% on every Auto Ship order on select brands</li>
+                    <li>Or save 20% on every Auto Ship order when you order 3 of the same size, identical item!</li>
+                </ul>
+                <p class="autoship_help_link">Still a few more questions?<a href="/auto-ship"> Learn more...</a></p>
+
+             </div>
+                      
+            </div>
+            </div>
+                  
+        </div>
+ </div>
+ <!-- Modal autoship_help End-->      
+  
+   <!-- REFER FRIEND START -->
+<style type="text/css">
+#customerEmailDiv {display:none;color: red;}
+#referFriendBox .mail input[type="text"], .mail textarea {overflow-x: hidden;width: 100%;padding: 5px;margin-bottom: 12px; border: 1px solid #ddd;}
+#referFriendBox .img{margin: auto;text-align: center;}
+#referFriendBox .img img{max-width: 100%;}
+#referFriendBox .button {border-radius: 0px;background-color: #99c455; border: none; color: #FFFFFF; text-align: center;font-size: 14px;padding: 5px;width: 45%;transition: all 0.5s;cursor: pointer;margin: 0px;padding: 5px !important;float: right;}
+#referFriendBox .button span {cursor: pointer;display: inline-block;position: relative;}
+#referFriendBox .referSubmit {border-radius: 0px;background-color: #99c455; border: none; color: #FFFFFF; text-align: center;font-size: 14px;padding: 5px;width: 40%;transition: all 0.5s;cursor: pointer;margin: 0px;cursor: pointer;float:right;}
+#referFriendBox .button:hover span:after {opacity: 1;right: 0;}
+#referFriendBox .mail-ftr ul{padding: 0px; margin: 0px;list-style: none;}
+#referFriendBox .mail-ftr ul li{display: inline-block;}
+#referFriendBox .mail-ftr ul li a{color: #ffffff;}
+#referFriendBox .mail-ftr {background: #525252; padding: 18px;font-size: 13px;text-align: center;color: white;bottom: 0;position: absolute;}
+#referFriendBox .modal-body { padding: 0px;}    
+#referFriendBox .mail-section .col-md-6.col-sm-6.col-xs-6 {padding: 0px;}
+#referFriendBox .post-box h5 {padding-top: 0px;margin-top: 0px;font-weight: bold;}
+#referFriendBox .post-box p{font-size: 13px;}
+#referFriendBox .post-box img{width: 100%}
+#referFriendBox .post-box {padding: 10px 15px;}
+#referFriendBox .post{border: 1px solid #ddd;padding: 5px;margin-bottom: 10px;}
+#referFriendBox .rf-container ul>li>a {color:#99c455;border-bottom: 2px;border-radius: 0;}
+#referFriendBox .rf-container ul>li>a:focus,.rf-container ul>li>a:hover {color:#fff !important;background: #99c455;border-bottom: 2px;}
+#referFriendBox .rf-container .active {color:#fff;background: #99c455;}
+#referFriendBox .rf-container .drop-10 {margin-top: 10px;}
+#referFriendBox #referFriend .nav-tabs>li {width: 25%;text-align: center;}
+#referFriendBox #referFriend .dropdown-menu {border: none;box-shadow: none;}
+#referFriendBox #referFriend .modal-title {font-size: 22px;color: #fff;}
+#referFriendBox #referFriend .modal-header {background: #99c455;}
+#referFriendBox #referFriend .close span {right: 25px;position: absolute;right: 25px;top: 15px;font-size: 30px;}
+#referFriendBox .message-content {width: 400px;padding-right: 30px;}
+#referFriendBox .rf-container {width: 400px;min-height: 600px;background:#ffffffdb;}
+#referFriendBox .mail-ftr ul {width: 398px;}
+#referFriendBox .drop-4 {left: -278px;}
+#referFriendBox .drop-3 {left: -185px;}
+#referFriendBox .drop-2 {left: -93px;}
+#referFriendBox .drop-1 {display: block; margin-top: 15px;}
+#referFriendBox #referFriend .nav-tabs {border-bottom: none;}
+#referFriendBox #referFriend #response {margin-top: 20px;}
+#referFriendBox #fbMSG,#twMSG,#msMSG,#referMSG{margin-top: 10px;clear:both;}
+#referFriendBox #fbMSG .error,#referMSG .error{color: #f00;}
+#referFriendBox #fbMSG .success, #referMSG .success{color: #99c455;}
+.p_0_left{padding-left:0;}
+.m_0_left{margin-left: 0;}
+.modal-image-line{width: 100%;height: 30px;}
+.refer_bg{background: url( /img/pops.jpg)no-repeat;background-size: cover;}
+.rf-border::before {border-top: 1px solid #91bf48;content: '';width: 100%;position: relative;top: 31.5px;}
+.rf_img_hover div{background: url(<?php // echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>frontend/rwd/tnv/images/live.png)no-repeat;background-size: contain;margin: 3px 22px !important;width: 20px;height: 14px;}
+.rf_img_hover:hover div{background: url(<?php //echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>frontend/rwd/tnv/images/live2.png)no-repeat !important;background-size: contain !important;background-color: #99c455 !important;background-position: 30px 10px;}
+
+.rf_text_area{color:#5a523f;}
+.rf-p{color: #2f71a8;font-weight: bold;font-size: 13px;}
+.rf-header{font-size: 34px;}
+.rf-menu .nav>li>a {padding: 5px 15px;}
+.nav.nav-tabs.rf-border {margin-top: 30px;}
+.rf-footer{margin-bottom: 30px;clear: both;margin-top: 50px;}
+.rf-footer h2{font-size: 14px;color:#6e6857;}
+
+@media screen and (max-width: 991px) {
+   #referFriendBox .message-content {width: 100%;padding-right: 0;}
+    #referFriendBox .rf-container {width: 100%;}
+    #referFriendBox .p_0_left{padding-right: 0;}
+}   
+@media screen and (max-width: 768px) {
+   #referFriendBox .message-content {width: 100%;padding-right: 0;}
+   .refer_bg{background: url(<?php // echo  Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN); ?>frontend/rwd/tnv/images/popm.png)no-repeat;background-size: cover;}
+   #referFriendBox .rf-container {background:transparent;}
+   .rf-header {margin-top: 230px;}
+
+}
+@media screen and (max-width: 460px) {
+#referFriendBox .referSubmit {width:100%}
+#referFriendBox .button{width: 100%;}
+   
+}
+@media screen and (max-width: 430px) {
+    
+.refer_bg {background-size: contain;}
+    .rf-header {margin-top: 170px;}
+   
+}
+</style>
+
+
+<!-- Modal REFER FRIEND -->
+<div id="referFriendBox">
+	<div class="modal fade" id="referFriend" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-body">
+			<div class="mail-section">
+                <img class="modal-image-line" src="/img/top-border.png" />
+
+              <div class="container-fluid refer_bg">
+					<div class="row">
+						<div class="col-md-6 p_0_left">
+                        
+							<div class="mail">
+							 <div class="rf-menu">
+							  <div class="container rf-container m_0_left"> 
+                               <h2 class="rf-header">REFER A FRIEND</h2>
+                                <p class="rf-p">Refer a friend to Terry Naturally® Vitamins <br />and you both GET $10 OFF YOUR NEXT ORDER*</p>
+
+                         <div class="rf_content_left" > 
+                    			<ul class="nav nav-tabs rf-border rf_tab_trigger">
+                                    <li><a href="#" data-rf-trigger="rf-email" class="active">@</a></li>
+                                    <li><a href="#" data-rf-trigger="rf-facebook" ><i class="fa fa-facebook"></i></a> </li>
+                                    <li><a href="#" data-rf-trigger="rf-twitter" ><i class="fa fa-twitter"></i></a> </li>
+                                    <li><a href="#" data-rf-trigger="rf-chat" class="rf_img_hover" ><div></div></a></li>
+								</ul>
+							 <div class="rf-email" >
+									<div class="dropOpen drop-10" style="display: block;">
+									   <div class="message-content">
+											<form id="referFriendForm" method="POST">
+                                                <input type="text"  name="user_name" placeholder="Your name" autocomplete="off" required>
+												<input type="text"  name="user_email" placeholder="Your email address" autocomplete="off" >
+												<input type="text" name="invitee_email" placeholder="Enter your friends' emails separated by commas" autocomplete="off" >
+												<textarea class="rf_text_area" name="text" cols="30" rows="10">Hi Friend! I want to share one of my favorite brands with you, Terry Naturally Vitamins! They have amazing products to help support your overall health and wellness, and I think you’ll love them as much as I do. 
+
+Because I referred you, you’ll receive an exclusive deal of $10 off your first purchase of $50 or more.
+
+Here’s to good health and good friends!</textarea>
+												<input type="submit" class="referSubmit button"  name="calculate-total-submit" value="Send Email">
+											</form> 
+											<div id="referMSG"></div>
+								  </div>
+								</div> 
+							</div>
+                                
+                                
+								
+								<div class="rf-facebook">
+								  
+									<div class="dropOpen" style="display: none;">
+										  <div class="message-content">
+											<div class="fb">
+												<div class="post-box">
+													
+													<div class="row post">                                                    
+														<div class="col-md-4">
+														   <div>
+															<img class="lazyload" data-src="/img/pops.jpg" alt="">
+														   </div>
+														</div>
+														<div class="col-md-8">
+															<h5>Hey Friends! Get $10 Off a $50 Purchase at Terry Naturally Vitamins</h5>
+															<p>Good health matters, and their amazing products help support overall health and wellness!</p>
+														</div>
+													</div>
+													
+												</div>
+												<div class="share-btn">
+												   <div class="message-content">                                                        
+													  <input id="fb-email" type="text" name="user_email" placeholder="Your Mail.."/> 
+													  <a class="button" id="fb-btn" href="http://www.facebook.com/sharer.php?u=<?php echo $block->getBaseUrl(); ?>referfriend/index/ref/">Share On Facebook </a>                                                                                                                 
+												   </div>
+												   <div id="fbMSG" class="text-center"></div> 
+												</div> 
+												   
+												</div>
+									  </div>
+								</div> 
+					       </div>
+							
+                            	
+							<div class="rf-twitter">
+									<div class="dropOpen" style="display: none;">
+										  <div class="message-content">
+											<div class="twitter">
+												<div class="post-box">
+													<div class="row post">
+														<div class="col-md-12">
+														   <div>
+															<p>I ❤️ @ TNaturallyVita! Use my link and we both get rewarded.</p>
+														   </div>
+														</div>
+													</div> 
+												</div>
+											
+												<div class="share-btn">
+												   <div class="message-content">                                                        
+													  <input id="tw-email" type="text" name="user_email" placeholder="Your Mail.."/> 
+													  <a class="button" id="tw-btn" href="http://www.twitter.com/intent/tweet?url=<?php echo $block->getBaseUrl(); ?>referfriend/index/ref/">Share On Twitter </a>                                                                                                                 
+												   </div>
+												   <div id="twMSG" class="text-center"></div> 
+												</div> 
+											</div>
+									  </div>
+								    </div>
+								</div>
+								
+
+                            	<div class="rf-chat"> 
+									<div class="dropOpen" style="display: none;">
+										  <div class="message-content">
+											<div class="twitter">
+												<div class="post-box">
+													<div class="row post">
+														<div class="col-md-12">
+														   <div>
+															<p>Share with your friends using Facebook Messenger by clicking the button below:</p>
+														   </div>
+														</div>
+													</div>
+													
+												</div> 
+												
+												<div class="share-btn">
+												   <div class="message-content">                                                        
+													  <input id="ms-email" type="text" name="user_email" placeholder="Your Mail.."/> 
+													  <a class="button" id="ms-btn" href="https://web.facebook.com/dialog/send?link=<?php echo $block->getBaseUrl(); ?>referfriend/index/ref/">Open Messenger </a>                                                                                                                 
+												   </div>
+												   <div id="msMSG" class="text-center"></div> 
+												</div>                       
+											</div>
+									  </div>
+								    </div> 
+								</div>
+
+                                <div class="rf-footer">
+                                <h2>View Terms and Conditions</h2>
+                              <p>*offer good on purchase of $50 or more.</p>
+                              </div>
+							</div>  
+                      </div>
+						  </div>
+						</div>
+						</div>
+						<div class="col-md-6"></div>
+				</div>
+			</div>   
+            
+		  </div>
+		  
+		</div>
+	  </div>
+	</div>
+	</div>
+</div>
+	
+<script>
+require(['jquery'],function($){
+        jQuery('#fb-btn,#tw-btn,#ms-btn').click(function(e) {
+            e.preventDefault();
+            var sEmail = jQuery('#fb-email,#tw-email,#ms-email').val();
+            // Function that validates email address through a regular expression.
+            var filter = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (filter.test(sEmail)) {
+                
+                var width  = 575,
+                height = 400,
+                left   = (jQuery(window).width()  - width)  / 2,
+                top    = (jQuery(window).height() - height) / 2,
+                url    = this.href,
+                urls = url + sEmail;
+                opts   = 'status=1' +
+                         ',width='  + width  +
+                         ',height=' + height +
+                         ',top='    + top    +
+                         ',left='   + left;
+            
+                window.open(urls, 'twitter', opts);
+            }
+            else {
+                alert("Email is invalid.");
+            }
+        });
+});	
+</script>
+
+<script>
+require(['jquery'],function($){
+jQuery(document).on('click','.rf_tab_trigger li a',function(){
+    jQuery('.dropOpen').css("display", "none");
+   // alert('aaa');
+    jQuery('.rf_tab_trigger li a').removeClass("active");
+   var content = jQuery(this).attr('data-rf-trigger');
+    jQuery(this).closest('.rf_content_left').children('.'+content).children('.dropOpen').show();
+
+
+ /*   
+    jQuery('.rf_dropdown').removeClass("active");
+    
+    var clickedLi = jQuery(this);
+	var currentEL = jQuery(this).parent('li').children('.dropdown_content').children('.dropOpen');
+
+	if (currentEL.is(':hidden')){
+		currentEL.slideDown(200);
+		clickedLi.addClass('active');
+		
+	}else{
+		//currentEL.slideUp(200);
+		currentEL.slideUp(200);
+		clickedLi.removeClass('active');
+		
+	}  */
+
+  });
+});
+
+require(['jquery'],function($){
+jQuery(document).on('submit','#referFriendForm',function(event){
+        event.preventDefault();
+        jQuery.ajax({
+                url:'/referfriend',
+                type:'POST',
+                data:jQuery(this).serialize(),
+                success:function(response){
+					if(response=="1"){
+						jQuery("#referMSG").html('<p class="success text-right">You have reffered your friend successfully.</p>');
+						jQuery("#referFriendForm")[0].reset();
+					}else{
+						jQuery("#referMSG").html('<p class="error text-right">'+response+'</p>');
+					}
+                }
+        });
+     });	
+});
+</script>
+
+<!-- REFER FRIEND END -->
+
+  
+    
+
+<script>
+/*
+jQuery("#image-main").elevateZoom({
+  zoomType: "window",
+  lensShape: "square",
+  lensSize: 100
+});
+*/
+require(['jquery'],function($){
+
+    jQuery(document).on('click','.btn_plus',function(){
+		var  x = parseInt(jQuery(this).parent('.addtocart').children('input.qty').val());
+		jQuery(this).parent('.addtocart').children('input.qty').val(x+1);
+	});
+	jQuery(document).on('click','.btn_minus',function(){
+		var  y = parseInt(jQuery(this).parent('.addtocart').children('input.qty').val());
+		if(y > 1){jQuery(this).parent('.addtocart').children('input.qty').val(y-1);};
+	});
+	
+	jQuery(document).on('click','.action.search',function(){
+		jQuery('#search_mini_form').unbind().submit();
+	});
+	
+	
+	
+	/*
+    $(window).load(function(){
+        setTimeout(function(){
+            $('img.lazyloadFix').each(function(key,val){
+                $(this).attr('src',$(this).attr('data-src'));
+            });
+        },5000);
+    });
+    */
+    
+	
+});
+
+
+</script>
+
+
+
+<script type="text/javascript">
+
+require(['jquery','js/slick.min'],function($){
+	jQuery('#homeSlider').slick({
+		  infinite: true,
+		  speed: 300,
+		  autoplay: true,
+		  autoplaySpeed: 4000,
+		  slidesToShow: 1,
+		  slidesToScroll: 1,
+		  arrows: true
+		 });
+		 
+	jQuery('#product_slider').slick({
+	  dots: true,
+	  infinite: false,
+	  speed: 300,
+	  slidesToShow: 3,
+	  slidesToScroll: 3,
+	  responsive: [
+		{
+		  breakpoint: 1200,
+		  settings: {
+			slidesToShow: 3,
+			slidesToScroll: 3,
+			infinite: true,
+			dots: false
+		  }
+		},
+		{
+		  breakpoint: 991,
+		  settings: {
+			slidesToShow: 2,
+			slidesToScroll: 2,
+			dots: false
+		  }
+		},
+		{
+		  breakpoint: 670,
+		  settings: {
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			dots: false
+		  }
+		}
+	  ]
+	});
+	
+	
+	
+	
+	
+	
+		jQuery('#upsell_slider').slick({
+	  dots: true,
+	  infinite: false,
+	  speed: 300,
+	  slidesToShow: 3,
+	  slidesToScroll: 3,
+	  responsive: [
+		{
+		  breakpoint: 1200,
+		  settings: {
+			slidesToShow: 3,
+			slidesToScroll: 3,
+			infinite: true,
+			dots: false
+		  }
+		},
+		{
+		  breakpoint: 991,
+		  settings: {
+			slidesToShow: 2,
+			slidesToScroll: 2,
+			dots: false
+		  }
+		},
+		{
+		  breakpoint: 670,
+		  settings: {
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			dots: false
+		  }
+		}
+	  ]
+	});
+
+});
+
+           
+</script>
+
+
+
+<script>
+    
+    require(['jquery'],function($){
+        
+        jQuery(document).ready(function() { 
+			jQuery(".product-item-name a,.page-title span,#related_products .media-body a, #product_slider .media-body a").each(function () {
+				jQuery(this).html( jQuery(this).html().replace("®","<sup>®</sup>") );
+				jQuery(this).html( jQuery(this).html().replace("*†","<sup>*†</sup>") );
+				jQuery(this).html( jQuery(this).html().replace("Â®","<sup>Â®</sup>") );
+				jQuery(this).html( jQuery(this).html().replace("â€ ","<sup>â€ </sup>") );
+				jQuery(this).html( jQuery(this).html().replace("â„¢","<sup>â„¢</sup>") );
+
+			});
+		});
+        
+    });
+    
+</script>
+
+
+
+<script>
+require(['jquery'],function($){
+jQuery(document).on('change','#checkEmail',function(event){
+                    if (jQuery(this).is(":checked")){
+                        jQuery('#customer-email').hide();
+						jQuery('#tooltip').hide();
+                        jQuery('#customerEmailDiv').show();
+                        var x = 'customnerservice@europharmausa.com';
+                        var y = jQuery("#customer-email").val(x).trigger('change');
+                    }else{
+                        jQuery('#customer-email').show();
+                        jQuery('#customerEmailDiv').hide();
+						jQuery('#tooltip').show();
+                        //var x = jQuery("#customerEmail").val();
+                        var y = jQuery("#customer-email").val("").trigger('change');
+                  }
+                  
+     });	
+});
+
+</script>
+
+<script>
+
+/*
+require(['jquery'],function($){
+    jQuery(document).on('click','.p_info_tab',function(){
+		jQuery('.p_info_tab').each(function(key,val){
+			jQuery(this).removeClass('active');
+			jQuery(this).attr('aria-selected','false');
+			jQuery(this).attr('aria-expanded','false');
+		});
+		jQuery('.p_info_content').each(function(key,val){
+			jQuery(this).attr('aria-hidden','true');
+			jQuery(this).hide();
+			jQuery(this).css("display", "none");
+		});
+		
+		jQuery('.p_info_content').each(function(key,val){
+			if(jQuery(this).attr('style') == "display: block;"){
+				jQuery(this).hide();
+				jQuery(this).css("display", "none");
+			}
+		});
+		
+		jQuery(this).next().find('.p_info_content').show();
+		
+		
+	});
+	
+});
+*/
+
+
+require(['jquery'],function($){
+    jQuery(document).ready(function(){
+        jQuery('.selectpicker').before('<span class="select_size">SELECT A SIZE</span>');
+		//$('.cookiebar-close').replace("Continue", "Close"); 
+    });
+	
+});
+
+</script>
+
+<style>
+.cookie_c {position: fixed;left: 50%;color: white; transform: translate(-50%,0%);
+    -ms-transform: translate(-50%,0%);width: 100%;z-index: 99999;background: #000; padding: 5px 10px;text-align: center;
+	bottom: 0;}
+.cookie_c a {text-decoration: underline;color: #fff;}	
+.cookie_c .my-close-button {text-decoration: none;color:#ffffff; display:inline-block; border-radius:3px; text-decoration:none; padding:0 6px; margin-left:8px;background:#70aa19;}
+
+.footer-bg {padding-bottom: 0px;}
+.page-footer {padding-bottom: 0px;}
+section.copyright {margin-bottom: 45px;}
+
+
+    
+</style>
+
+<div class="cookie-message">
+   <div class="cookie_c">
+	Our website uses cookies to track website usage and preferences. You can read more about <a href="/cookies">cookies</a> here or by visiting 
+	our <a href="/privacy-policy">privacy policy</a>. <a class="my-close-button" href="#">I Understand</a>
+   </div>
+</div>
+
+<script>
+
+	require([
+        'jquery',
+        'js/jquery.cookiebar'
+    ], function($) {
+		$(document).ready(function() {
+			$('.cookie-message').cookieBar({
+				fixed: true,
+				bottom: true,
+				closeButton : '.my-close-button'
+			}); 
+		});
+    });
+
+</script>
+
+

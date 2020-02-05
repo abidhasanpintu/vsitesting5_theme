@@ -1,0 +1,80 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+?>
+<?php /* @var $block \Magento\Catalog\Block\Product\View\Options\Type\Select */ ?>
+<?php
+$_option = $block->getOption();
+$class = ($_option->getIsRequire()) ? ' required' : '';
+?>
+<?php
+    $_product = $block->getProduct();
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+	$customOptions = $objectManager->get('Magento\Catalog\Model\Product\Option')->getProductOptionCollection($_product);
+	$finalOption = array();
+	$hasOptions = false;
+	foreach($customOptions as $optionKey => $optionVal){
+		$hasStock = false;
+		$availabaleOptions = array();
+		foreach($optionVal->getValues() as $valuesKey => $valuesVal){
+			//if($valuesVal->getInStock() == '0'){continue;};
+			$availabaleOptions[] = $valuesVal;
+			$hasStock = true;
+		}
+		if($hasStock){
+			$finalOption[] = array(
+				'id' => $optionVal->getId(),
+				'value' => $availabaleOptions //$optionVal->getValues()
+			);
+			$hasOptions = true;
+		}
+	}
+?>
+
+<div class="field<?= /* @escapeNotVerified */ $class ?>">
+    <div class="product-name hidden-xs">
+	    <h1><?php echo$_product->getName();?></h1>
+	</div>
+	
+	<div class="short-description">
+    	<?php echo __($_product->getShortDescription()); ?>
+    </div><br>
+    
+    
+
+    <div class="control">
+        <?php
+			$optStr = "";
+			foreach($finalOption as $optionKey => $optionVal){
+				
+			
+				
+				$optStr .= "<div class='custom-options'>";
+					$optStr .= "<div>";
+					foreach($optionVal['value'] as $valuesKey => $valuesVal) {
+						
+					    $optStr .= "<p class='p-weight'>".$valuesVal->getTitle()."</p>"; 
+					}
+				$optStr .= "</div></div>";
+			}
+			echo($optStr);
+		?>
+		<span>SKU:  <?php echo $_product->getSku(); ?></span>
+		
+		        <div class="extra-info">
+                    <?php if($_product->getData('document')): ?>
+                        <p>
+                            <a href="<?='/media/catalog/product'.$_product->getData('document') ?>" target="_blank">
+                                <img src="/img/pdf01.png" alt="pdf link">
+                            </a>
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+    </div>
+</div>

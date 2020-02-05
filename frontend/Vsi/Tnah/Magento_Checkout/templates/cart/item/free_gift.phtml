@@ -1,0 +1,178 @@
+
+<style>
+
+#freeCartForm{padding: 15px;}
+
+.modal {text-align: center;}
+@media screen and (min-width: 768px) { 
+  .modal:before { display: inline-block; vertical-align: middle; content: " "; height: 100%; }
+}
+.modal-dialog { display: inline-block; text-align: left; vertical-align: middle;}
+
+#freeGiftModal .giftItems {
+    max-height: 250px;overflow-x: hidden;
+    overflow-y: scroll;
+    margin: 10px 0 30px;
+    background: #e2f1f8;
+    padding: 12px 0;
+}
+#freeGiftModal .media-heading{margin-top:20px;}
+#freeGiftModal .modal-body{padding: 15px;}
+#freeGiftMsg{color: #f00;}
+#freeGiftModal button{font-size: 14px; max-width: 160px;}
+#free-bg-sky{
+    background: #e2f1f8;
+    color: #006da9;
+    padding: 5px 14px;
+    font-weight: bold;
+}
+
+.freeTitle{
+    font-size: 24px !important;
+    padding: 0 0 0 15px;
+    margin-bottom: 5px;
+}
+
+.freeTitle2{
+    font-size: 16px;
+    font-weight:bold;
+    padding-left: 15px;
+}
+
+</style>
+
+<?php 
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$_productCollectionFactory = $objectManager->get('\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory');
+$helper = $objectManager->get('\Magento\Catalog\Helper\Category');
+$categoryId = 116;
+$categories = [116];//category ids array
+$_productCollection = $_productCollectionFactory->create();
+$_productCollection->addAttributeToSelect('*')->addAttributeToFilter('status', 1)->addCategoriesFilter(['in' => $categories]);
+?>
+
+
+<div id="freeGiftModal">
+    <h2 class="freeTitle">Want to learn more?</h2>
+    <p class="freeTitle2">Add these free items to your cart!</p>
+   <div class="row">  
+      <div class="col-sm-9">
+      <form id="freeCartForm">
+        <br>
+        <h3><span id="free-bg-sky">Free product information</span></h3>
+		<div class="giftItems">
+		    <div class="row">
+			<?php  foreach($_productCollection as $_product):   ?>
+            <div class="col-md-6">
+			<div class="media" data-pid="<?php echo $_product->getId(); ?>">
+			  <div class="media-left pull-left">
+				<img src="<?= '/pub/media/catalog/product'.$_product->getImage(); ?>" class="media-object"  style="width:80px">
+			  </div>
+			  <div class="media-body">
+				<p class="media-heading"><input type="checkbox" name="ids[<?php  echo $_product->getId(); ?>]" class="freeGiftCheckBox" /> &nbsp; <?php  echo $_product->getName(); ?></p>
+			  </div>
+			</div>
+            </div>
+			<?php  endforeach; ?> 
+			</div>
+			<input type="hidden" name="form_key" value="<?php echo $block->getFormKey() ?>" />
+        </div>
+        <p><button type="submit" id="freeCartBTN" class="button addFreeGiftRef" >Add to Cart <i class="fa fa-caret-right"></i></button></p>
+      </form>
+      </div>
+      <div class="col-sm-3"></div>
+   </div>
+</div>
+
+
+
+<script>
+require(['jquery'],function($){
+     jQuery(function(){
+        jQuery("#freeCartForm").submit(function(event){
+            event.preventDefault();
+
+           jQuery.ajax({
+                    url:'/fix/freegift/addtocart',
+                    type:'POST',
+                    data:$(this).serialize(),
+                    success:function(result){
+                       if(result==1){
+            				jQuery("button").parent('p').append(' Added to your cart successfully');
+            				//jQuery(button).remove();
+            				setTimeout(function(){ location.reload(); },2000);
+            			}else if( result == '009'){
+							alert('Product is already in cart!');
+						}
+
+                    }
+
+            });
+        });
+    });
+	
+});
+    
+</script>
+
+
+
+
+<script>
+
+/*	function addFreeGift(id,button){
+		
+		var btnTxt = jQuery(button).text();
+		jQuery(button).html('Please Wait...');
+		
+		//jQuery('.giftItems button').attr('disabled','disabled');
+		jQuery.get('/freegift/index/addtocart/id/'+id, function(data){
+			if(data==1){
+				jQuery(button).parent('p').append(' Added to your cart successfully');
+				//jQuery(button).remove();
+				setTimeout(function(){ location.reload(); },2000);
+			}else{
+				//jQuery('.giftItems button').removeAttr('disabled');
+				jQuery(button).text(btnTxt);
+				jQuery(button).after('<p id="freeGiftMsg"> Unable to add this item to cart.</p>');
+				//setTimeout(function(){ jQuery('#freeGiftMsg').modal('hide'); },2000);
+			}
+		}).fail(function() {
+			//jQuery('.giftItems button').removeAttr('disabled');
+			jQuery(button).text(btnTxt);
+			jQuery(button).after('<p id="freeGiftMsg"> Unable to add this item to cart.</p>');
+			//setTimeout(function(){ jQuery('#freeGiftMsg').modal('hide'); },2000);
+	  });
+		
+	}*/
+
+</script>
+
+<script>
+    
+    <?php /** if(Mage::getStoreConfig('FreeGift/settings/only_new_user')){ ?>
+	Checkout.prototype.gotoSection = Checkout.prototype.gotoSection.wrap(
+		function(parentMethod, section, reloadProgressBlock) {
+				parentMethod(section, reloadProgressBlock);
+				if(section == 'shipping_method'){
+					jQuery.get('/freegift/index/show', function(data){
+						if(data==1){
+							//jQuery('#freeGiftModal').modal('show');
+						}
+					});
+				}
+			}
+	);
+	<?php }else{ ?>
+	
+	    jQuery.get('/freegift/index/show', function(data){
+			if(data==1){
+				//jQuery('#freeGiftModal').modal('show');
+			}
+		}); 
+		
+	<?php  } **/ ?> 
+	
+</script>
+
+<?php // } ?>

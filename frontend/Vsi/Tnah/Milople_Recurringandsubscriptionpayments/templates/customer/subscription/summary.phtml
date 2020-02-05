@@ -1,0 +1,894 @@
+<?php
+/**
+*
+* Do not edit or add to this file if you wish to upgrade the module to newer
+* versions in the future. If you wish to customize the module for your
+* needs please contact us to https://www.milople.com/contact-us.html
+*
+* @category    Ecommerce
+* @package     Milople_Recurringandsubscriptionpayments
+* @copyright   Copyright (c) 2017 Milople Technologies Pvt. Ltd. All Rights Reserved.
+* @url         https://www.milople.com/magento2-extensions/ecurring-and-subscription-payments-m2.html
+*
+**/
+$terms = $this->getTerm();
+$order = $this->getOrder();
+$_order = $order;
+$plan =  $this->getPlan();
+$currenct_customer = $this->getCustomer()->getId();
+$userName = $this->getCustomer()->getName();
+?>
+
+<?php
+
+$msgShipping = '';
+$msgBilling = '';
+$data = $this->getRequest()->getPost();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$historyModel = $objectManager->create('Milople\Recurringandsubscriptionpayments\Model\History');
+$addressCollection = $objectManager->get('Magento\Sales\Model\Order\Address');
+$subscription = $this->getSubscription();
+if($data['BillingStreet'] || $data['BillingCity'] || $data['BillingPostcode'] || $data['BillingRegion']){
+	
+	$postData = array(
+	   'street' => $data['BillingStreet'],
+	   'city' => $data['BillingCity'],
+	   'postcode' => $data['BillingPostcode'],
+	   'region_id' => $data['BillingRegion'],
+	);
+	$addressId = (int) $data['BillingId'];
+	$addressFactory = $addressCollection->load($addressId);
+	
+	if($addressFactory->getEmail()==$this->getCustomer()->getEmail()){
+		$getSavedData = array(
+		   'street' => $addressFactory->getStreet()[0],
+		   'city' => $addressFactory->getCity(),
+		   'postcode' => $addressFactory->getPostcode(),
+		   'region_id' => $addressFactory->getRegionId()
+		);
+		$dataDifference = array_diff_assoc($postData,$getSavedData);
+		if(!empty($dataDifference)){
+			$notes[] = 'Billing address changed';
+		}
+		$region = $objectManager->create('Magento\Directory\Model\Region')->load($data['BillingRegion']);
+		$region = $region->getCode();
+		$addressCollection->load($addressId)
+		->setStreet($data['BillingStreet'])
+		->setCity($data['BillingCity'])
+		->setPostcode($data['BillingPostcode'])
+		->setRegionId($data['BillingRegion'])
+		->setRegion($region)
+		->save();
+		$historyModel->setHistory($subscription->getId(),$subscription->getCustomerName(),'Customer','Billing address updated by customer');
+		$msgBilling = 'Billing address updated sucessfully';
+	}
+}
+
+
+
+if($data['shippingStreet'] || $data['shippingCity'] || $data['shippingPostcode'] || $data['shippingRegion']){
+	$postData = array(
+	   'street' => $data['shippingStreet'],
+	   'city' => $data['shippingCity'],
+	   'postcode' => $data['shippingPostcode'],
+	   'region_id' => $data['shippingRegion'],
+	   //'country_id' => $data['shippingCountry']
+	);
+	$addressId = (int) $data['shippingId'];
+	$addressFactory = $addressCollection->load($addressId);
+	if($addressFactory->getEmail()==$this->getCustomer()->getEmail()){
+		$getSavedData = array(
+		   'street' => $addressFactory->getStreet()[0],
+		   'city' => $addressFactory->getCity(),
+		   'postcode' => $addressFactory->getPostcode(),
+		   'region_id' => $addressFactory->getRegionId()
+		);
+		$dataDifference = array_diff_assoc($postData,$getSavedData);
+		if(!empty($dataDifference)){
+			$notes[] = 'Shipping address changed';
+		}
+		$region = $objectManager->create('Magento\Directory\Model\Region')->load($data['shippingRegion']);
+		$region = $region->getCode();
+		$addressCollection->load($addressId)
+		->setStreet($data['shippingStreet'])
+		->setCity($data['shippingCity'])
+		->setPostcode($data['shippingPostcode'])
+		->setRegionId($data['shippingRegion'])
+		->setRegion($region)
+		->save();
+		$historyModel->setHistory($subscription->getId(),$subscription->getCustomerName(),'Customer','Shipping address updated by customer');
+		$msgBilling = 'Shipping address updated sucessfully';
+	}
+}
+
+?>
+
+
+
+<?php
+if($this->getSubscription()->getCustomerId() == $currenct_customer ): ?>
+ <?php $_items = $this->getItemsCollection(); ?>
+ <div class="page-title title-buttons">
+        <h3><?php //echo $this->getTitle()?></h3>
+    </div>
+ <div class="block block-addresses-default">
+	 <div class= "block-content">
+        <div class="box box-address-billing">
+     		<ol>
+				<h2><?php echo __('Subscription Information') ?></h2>
+                <li class= "item" style="border: 1px solid rgb(204, 204, 204); padding-left: 10px; padding-top: 4px;">
+                  <p>
+                  	<table>
+                    <tr height="25px;">
+                    	<td> <?php  echo __('Subscription Start Date : ');?></td>
+                        <td><?php echo $block->formatDate($this->getSubscription()->getDateStart(), \IntlDateFormatter::LONG)    ?></td>
+                    </tr>
+                 <!--   <tr height="25px;">
+                     	<td><?php  echo __('Subscription Expiry Date : '); ?></td>
+                        <td>
+                       	 <?php
+							if ($this->getSubscription()->isInfinite() == 1):
+									echo '-';
+								else:
+							 		echo $block->formatDate($this->getSubscription()->getDateExpire(), \IntlDateFormatter::LONG);
+							endif;
+						?>
+                   		</td>
+                    </tr> -->
+                    <tr height="25px;">
+                    	<td><?php  echo __('Upcoming Payment Date  : ');  ?></td>
+                        <td>
+							<?php echo $block->formatDate($this->getSubscription()->getNextPaymentDate(), \IntlDateFormatter::LONG); ?>
+							<a href="#" class="other_a" data-toggle="modal" data-target="#changeDate"><b>Change</b></a>
+						</td>
+                    </tr>
+                    <tr height="25px;">
+                    	<td><?php  echo __('Subscribed Plan : ');    ?></td>
+                        <td><?php echo $plan->getPlanName();  ?></td>
+                    </tr>
+                    <tr height="25px;">
+                    	<td><?php echo __('Subscribed Term :');  ?></td>
+                        <td><?php echo __($terms->getLabel());   ?></td>
+
+                    </tr>
+                     <tr height="25px;">
+                    	<td><?php echo __('Shipping Method : ');   ?></td>
+ 						<td>
+						<?php 
+						
+							$sm = str_replace("webfitter_","",$order->getShippingMethod());
+							
+							if($sm == 'domestic_standard'){
+								echo 'Standard';
+							}elseif($sm == 'domestic_secondday'){
+								echo 'Second Day Air';
+							}elseif($sm == 'domestic_nextday'){
+								echo 'Next Day Air';
+							}
+						
+						?>
+						
+						<a href="#" data-toggle="modal" class="other_a" data-target="#changeSmethod" ><b>Change</b></a> 
+						</td>
+                    </tr>
+
+                     <tr height="25px;">
+                    	<td><?php  echo __('Status : ')   ?></td>
+                        <td><?php echo $this->getSubscription()->getSubscriptionStatusLabel()  ?></td>
+                    </tr>
+                    </table>
+					</li>
+                    <h2><?php echo __('Payment Method') ?></h2>
+               	<!-- <li class="item" style="border: 1px solid rgb(204, 204, 204); padding-left: 10px; padding-top: 4px; padding-bottom:5px;">
+
+                    <?php echo $order->getPayment()->getMethodInstance()->getTitle(); ?><br />
+                  </li> -->
+               <?php if($this->isStripeOrder($order->getIncrementId())): ?>
+                  <h3>
+                   Default Card
+          </h3>
+             <li class="item" style="border: 1px solid rgb(204, 204, 204); padding-left: 10px; padding-top: 4px; padding-bottom:5px;">
+                   <select disabled id="cardropdown" class='cards'>
+                     <option>
+                   <?php $defaultcard = $this->returndefaultcard($order->getIncrementId()); ?>
+                   <?php echo 'XXXX - XXXX - XXXX - '.$defaultcard; ?>
+                       </option>
+                     <?php $allbutdefault = $this->returnallbutdefault($order->getIncrementId()); ?>
+                     <?php foreach($allbutdefault as $allbut): ?>
+                     <option>
+                     <?php echo 'XXXX - XXXX - XXXX - '.$allbut; ?>
+                     </option>
+                     <?php endforeach; ?>
+                    </select>
+                   <button id='changecard'>
+                     Change
+                    </button>
+                    <button id='save' disabled>
+                      Save
+                    </button>
+          </li>
+          <?php endif; ?>
+		  
+            <li class="item" style="border: 1px solid rgb(204, 204, 204); padding-left: 10px; padding-top: 4px; padding-bottom:5px;">
+               <?php echo $order->getPayment()->getMethodInstance()->getTitle(); ?><br />
+ <!--              
+                <?php 
+                  //  if($this->getSubscription()->getRealPaymentId()):
+                  //  $paymentInfo = Mage::getModel('AutoShip/AutoShip')->getPaymentInfo($this->getSubscription()->getId());
+                ?>
+                    <p><b>Card: </b><?php // echo $paymentInfo->paymentProfile->payment->creditCard->cardNumber; ?> <b>Exp: </b><?php // echo $paymentInfo->paymentProfile->payment->creditCard->expirationDate; ?></p>
+                   
+-->
+				   
+			<?php foreach ($_items as $_item){$seqId = $_item->getId();}?>
+				   
+                    <div>
+                        <form method="post" action="/autoship/index/updatecc" id="updateCC">
+                            <input type="hidden" name="id" value="<?php echo $this->getSubscription()->getId(); ?>" />
+							<input type="hidden" name="seqId" value="<?= $seqId; ?>">
+							<input type="hidden" name="userName" value="<?= $userName; ?>" />
+                            <ul style="padding: 0 15px 0 0;" class="form-list" id="payment_form_authorizenet" style="">
+                                
+                                <li>
+                                    <label for="authorizenet_cc_number" class="required"><em>*</em>Credit Card Number</label>
+                                    <div class="input-box">
+                                        <input required type="text" pattern="\d*" id="authorizenet_cc_number" name="payment[cc_number]" title="Credit Card Number" class="input-text validate-cc-number validate-cc-type" value="" autocomplete="off">
+                                    </div>
+                                </li>
+                                <li id="authorizenet_cc_type_exp_div">
+                                    <label for="authorizenet_expiration" class="required"><em>*</em>Expiration Date</label>
+                                    <div class="input-box">
+                                        <table style="width: 100%">
+                                            <tr>
+                                                <td>
+                                                    <div class="v-fix">
+                                                        <select required id="authorizenet_expiration" name="payment[cc_exp_month]" autocomplete="off">
+                                                            <option value="" selected="selected">Month</option>
+                                                            <option value="1">01 - January</option>
+                                                            <option value="2">02 - February</option>
+                                                            <option value="3">03 - March</option>
+                                                            <option value="4">04 - April</option>
+                                                            <option value="5">05 - May</option>
+                                                            <option value="6">06 - June</option>
+                                                            <option value="7">07 - July</option>
+                                                            <option value="8">08 - August</option>
+                                                            <option value="9">09 - September</option>
+                                                            <option value="10">10 - October</option>
+                                                            <option value="11">11 - November</option>
+                                                            <option value="12">12 - December</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="v-fix">
+                                                        <select required id="authorizenet_expiration_yr" name="payment[cc_exp_year]" autocomplete="off">
+                                                            <option value="" selected="selected">Year</option>
+                                                            <option value="2018">2018</option>
+                                                            <option value="2019">2019</option>
+                                                            <option value="2020">2020</option>
+                                                            <option value="2021">2021</option>
+                                                            <option value="2022">2022</option>
+                                                            <option value="2023">2023</option>
+                                                            <option value="2024">2024</option>
+                                                            <option value="2025">2025</option>
+                                                            <option value="2026">2026</option>
+                                                            <option value="2027">2027</option>
+                                                            <option value="2028">2028</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        
+                                    </div>
+                                </li>
+							                          <li id="authorizenet_cc_type_cvv_div">
+                                    <label for="authorizenet_cc_cid" class="required"><em>*</em>Card Verification Number</label>
+                                    <div class="input-box">
+                                        
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <div class="v-fix">
+                                                        <input required type="text" pattern="\d*" title="Card Verification Number" class="input-text cvv required-entry validate-cc-cvn" id="authorizenet_cc_cid" name="payment[cc_cid]" value="" autocomplete="off">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="v-fix">
+                                                        <button class="action primary" type="submit">UPDATE</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        
+                                        
+                                    </div>
+                                </li>
+                                
+                            </ul>
+                        </form>
+                        <p class="cardMsg"></p>
+                    </div>
+		  
+			</ol>
+               <input type="hidden" id="increment_id" value="<?php echo $order->getIncrementId(); ?>"/>
+        </div>
+	 <div class="box box-address-shipping">
+             <h2><?php echo __('Customer Information') ?></h2>
+                <ol style="border: 1px solid rgb(204, 204, 204); padding-left: 18px; padding-top: 10px;" >
+                    <li class="item">
+                     <table>
+                  	    <tr height="25px;">
+                   			 <td><label><?php echo __('Name :') ?></label></td>
+                   			 <td class="value"><?php echo $order->getCustomerName();?></td>
+             		   </tr>
+                   	   <tr height="25px;">
+                   			 <td><label><?php echo __('Email :') ?></label></td>
+                   			 <td class="value"><a href="mailto:<?php echo $order->getCustomerEmail() ?>"><?php echo $order->getCustomerEmail();?></a></td>
+             		   </tr>
+                        <?php if ($_groupName = $this->getCustomerGroupName()) : ?>
+                            <tr height="25px;">
+                                <td width="42%"><label><?php echo __('Customer Group :') ?></label></td>
+                                <td class="value"><?php echo $_groupName ?></td>
+                            </tr>
+               		  <?php endif; ?>
+        				<tr height="25px;">
+                          <td colspan="2">
+							<!--<h5 style="padding-top: 15px;"><?php echo __('Billing Address') ?></h5>
+							<address class="admin__page-section-item-content">
+							   <?php echo $this->addressRenderer->format($order->getBillingAddress(), 'html'); ?>
+							</address>-->
+							<div>
+								<p style="color: #99c455; font-weight: bold;"><?php echo $msgBilling; ?></p>
+								<div><label><?php echo __('Billing Address :');?></label><br />
+								<a id="aEditBilling" style="cursor: pointer;">Edit</a>
+								</div>
+								<div class="value"><address id="billingAddress"><?php echo $this->addressRenderer->format($_order->getBillingAddress(), 'html'); ?></address>
+									<div style="display: none;" id="editBilling">
+									<form method="post" action="">
+										<p>Street: <input type="text" name="BillingStreet" value="<?php echo $_order->getBillingAddress()->getStreet()[0]; ?>" /></p>
+										<p>City: <input type="text" name="BillingCity" value="<?php echo $_order->getBillingAddress()->getCity(); ?>" /></p>
+										<p>Postcode: <input type="text" name="BillingPostcode" value="<?php echo $_order->getBillingAddress()->getPostcode(); ?>" /></p>
+										<p>Region: <select name="BillingRegion" title="State" style="" defaultvalue="">
+											<option value="1" <?php if($_order->getBillingAddress()->getRegionId()=='1') echo 'selected'; ?> >Alabama</option>
+											<option value="2" <?php if($_order->getBillingAddress()->getRegionId()=='2') echo 'selected'; ?> >Alaska</option>
+											<option value="486" <?php if($_order->getBillingAddress()->getRegionId()=='486') echo 'selected'; ?> >American Samoa</option>
+											<option value="4" <?php if($_order->getBillingAddress()->getRegionId()=='4') echo 'selected'; ?> >Arizona</option>
+											<option value="5" <?php if($_order->getBillingAddress()->getRegionId()=='5') echo 'selected'; ?> >Arkansas</option>
+											<option value="6" <?php if($_order->getBillingAddress()->getRegionId()=='6') echo 'selected'; ?> >Armed Forces Africa</option>
+											<option value="7" <?php if($_order->getBillingAddress()->getRegionId()=='7') echo 'selected'; ?> >Armed Forces Americas</option>
+											<option value="8" <?php if($_order->getBillingAddress()->getRegionId()=='8') echo 'selected'; ?> >Armed Forces Canada</option>
+											<option value="9" <?php if($_order->getBillingAddress()->getRegionId()=='9') echo 'selected'; ?> >Armed Forces Europe</option>
+											<option value="10" <?php if($_order->getBillingAddress()->getRegionId()=='10') echo 'selected'; ?> >Armed Forces Middle East</option>
+											<option value="11" <?php if($_order->getBillingAddress()->getRegionId()=='11') echo 'selected'; ?> >Armed Forces Pacific</option>
+											<option value="12" <?php if($_order->getBillingAddress()->getRegionId()=='12') echo 'selected'; ?> >California</option>
+											<option value="13" <?php if($_order->getBillingAddress()->getRegionId()=='13') echo 'selected'; ?> >Colorado</option>
+											<option value="14" <?php if($_order->getBillingAddress()->getRegionId()=='14') echo 'selected'; ?> >Connecticut</option>
+											<option value="15" <?php if($_order->getBillingAddress()->getRegionId()=='15') echo 'selected'; ?> >Delaware</option>
+											<option value="16" <?php if($_order->getBillingAddress()->getRegionId()=='16') echo 'selected'; ?> >District of Columbia</option>
+											<option value="18" <?php if($_order->getBillingAddress()->getRegionId()=='18') echo 'selected'; ?> >Florida</option>
+											<option value="19" <?php if($_order->getBillingAddress()->getRegionId()=='19') echo 'selected'; ?> >Georgia</option>
+											<option value="487" <?php if($_order->getBillingAddress()->getRegionId()=='487') echo 'selected'; ?> >Guam</option>
+											<option value="21" <?php if($_order->getBillingAddress()->getRegionId()=='21') echo 'selected'; ?> >Hawaii</option>
+											<option value="22" <?php if($_order->getBillingAddress()->getRegionId()=='22') echo 'selected'; ?> >Idaho</option>
+											<option value="23" <?php if($_order->getBillingAddress()->getRegionId()=='23') echo 'selected'; ?> >Illinois</option>
+											<option value="24" <?php if($_order->getBillingAddress()->getRegionId()=='24') echo 'selected'; ?> >Indiana</option>
+											<option value="25" <?php if($_order->getBillingAddress()->getRegionId()=='25') echo 'selected'; ?> >Iowa</option>
+											<option value="26" <?php if($_order->getBillingAddress()->getRegionId()=='26') echo 'selected'; ?> >Kansas</option>
+											<option value="27" <?php if($_order->getBillingAddress()->getRegionId()=='27') echo 'selected'; ?> >Kentucky</option>
+											<option value="28" <?php if($_order->getBillingAddress()->getRegionId()=='28') echo 'selected'; ?> >Louisiana</option>
+											<option value="29" <?php if($_order->getBillingAddress()->getRegionId()=='29') echo 'selected'; ?> >Maine</option>
+											<option value="490" <?php if($_order->getBillingAddress()->getRegionId()=='490') echo 'selected'; ?> >Mariana Islands</option>
+											<option value="489" <?php if($_order->getBillingAddress()->getRegionId()=='489') echo 'selected'; ?> >Marshall Islands</option>
+											<option value="31" <?php if($_order->getBillingAddress()->getRegionId()=='31') echo 'selected'; ?> >Maryland</option>
+											<option value="32" <?php if($_order->getBillingAddress()->getRegionId()=='32') echo 'selected'; ?> >Massachusetts</option>
+											<option value="33" <?php if($_order->getBillingAddress()->getRegionId()=='33') echo 'selected'; ?> >Michigan</option>
+											<option value="488" <?php if($_order->getBillingAddress()->getRegionId()=='488') echo 'selected'; ?> >Micronesia</option>
+											<option value="34" <?php if($_order->getBillingAddress()->getRegionId()=='34') echo 'selected'; ?> >Minnesota</option>
+											<option value="35" <?php if($_order->getBillingAddress()->getRegionId()=='35') echo 'selected'; ?> >Mississippi</option>
+											<option value="36" <?php if($_order->getBillingAddress()->getRegionId()=='36') echo 'selected'; ?> >Missouri</option>
+											<option value="37" <?php if($_order->getBillingAddress()->getRegionId()=='37') echo 'selected'; ?> >Montana</option>
+											<option value="38" <?php if($_order->getBillingAddress()->getRegionId()=='38') echo 'selected'; ?> >Nebraska</option>
+											<option value="39" <?php if($_order->getBillingAddress()->getRegionId()=='39') echo 'selected'; ?> >Nevada</option>
+											<option value="40" <?php if($_order->getBillingAddress()->getRegionId()=='40') echo 'selected'; ?> >New Hampshire</option>
+											<option value="41" <?php if($_order->getBillingAddress()->getRegionId()=='41') echo 'selected'; ?> >New Jersey</option>
+											<option value="42" <?php if($_order->getBillingAddress()->getRegionId()=='42') echo 'selected'; ?> >New Mexico</option>
+											<option value="43" <?php if($_order->getBillingAddress()->getRegionId()=='43') echo 'selected'; ?> >New York</option>
+											<option value="44" <?php if($_order->getBillingAddress()->getRegionId()=='44') echo 'selected'; ?> >North Carolina</option>
+											<option value="45" <?php if($_order->getBillingAddress()->getRegionId()=='45') echo 'selected'; ?> >North Dakota</option>
+											<option value="47" <?php if($_order->getBillingAddress()->getRegionId()=='47') echo 'selected'; ?> >Ohio</option>
+											<option value="48" <?php if($_order->getBillingAddress()->getRegionId()=='48') echo 'selected'; ?> >Oklahoma</option>
+											<option value="49" <?php if($_order->getBillingAddress()->getRegionId()=='49') echo 'selected'; ?> >Oregon</option>
+											<option value="491" <?php if($_order->getBillingAddress()->getRegionId()=='491') echo 'selected'; ?> >Palau</option>
+											<option value="51" <?php if($_order->getBillingAddress()->getRegionId()=='51') echo 'selected'; ?> >Pennsylvania</option>
+											<option value="485" <?php if($_order->getBillingAddress()->getRegionId()=='485') echo 'selected'; ?> >Puerto Rico</option>
+											<option value="53" <?php if($_order->getBillingAddress()->getRegionId()=='53') echo 'selected'; ?> >Rhode Island</option>
+											<option value="54" <?php if($_order->getBillingAddress()->getRegionId()=='54') echo 'selected'; ?> >South Carolina</option>
+											<option value="55" <?php if($_order->getBillingAddress()->getRegionId()=='55') echo 'selected'; ?> >South Dakota</option>
+											<option value="56" <?php if($_order->getBillingAddress()->getRegionId()=='56') echo 'selected'; ?> >Tennessee</option>
+											<option value="57" <?php if($_order->getBillingAddress()->getRegionId()=='57') echo 'selected'; ?> >Texas</option>
+											<option value="58" <?php if($_order->getBillingAddress()->getRegionId()=='58') echo 'selected'; ?> >Utah</option>
+											<option value="59" <?php if($_order->getBillingAddress()->getRegionId()=='59') echo 'selected'; ?> >Vermont</option>
+											<option value="492" <?php if($_order->getBillingAddress()->getRegionId()=='492') echo 'selected'; ?> >Virgin Islands</option>
+											<option value="61" <?php if($_order->getBillingAddress()->getRegionId()=='61') echo 'selected'; ?> >Virginia</option>
+											<option value="62" <?php if($_order->getBillingAddress()->getRegionId()=='62') echo 'selected'; ?> >Washington</option>
+											<option value="63" <?php if($_order->getBillingAddress()->getRegionId()=='63') echo 'selected'; ?> >West Virginia</option>
+											<option value="64" <?php if($_order->getBillingAddress()->getRegionId()=='64') echo 'selected'; ?> >Wisconsin</option>
+											<option value="65" <?php if($_order->getBillingAddress()->getRegionId()=='65') echo 'selected'; ?> >Wyoming</option>
+										</select></p>
+										<input type="hidden" name="BillingId" value="<?php echo $_order->getBillingAddress()->getId(); ?>" />
+										<div>
+											<button type="submit" class="action primary">UPDATE</button>
+										</div>
+									</form>
+									</div>
+								</div>
+							</div>
+						   
+						   
+			
+                        </td>
+                        </tr>
+					   <?php if(!$order->getIsVirtual()): ?>
+							<tr height="25px;">
+							  <td colspan="2">
+									  <!--<h5 style="padding-top: 18px;"><?php echo __('Shipping Address') ?></h5>
+									  <address>
+										<?php echo $this->addressRenderer->format($order->getShippingAddress(), 'html'); ?><br/>
+									 </address>-->
+									 
+									 <?php if( $_order->getShippingAddress()):?>
+										<div>
+											<p style="color: #99c455; font-weight: bold;"><?php echo $msgShipping; ?></p>
+											<div><label><?php echo __('Shipping Address :'); ?></label><br />
+												<a id="aEditShipping" style="cursor: pointer;">Edit</a>
+											</div>
+											<div class="value">
+												<address id="shippingAddress"><?php echo $this->addressRenderer->format($_order->getShippingAddress(),'html'); ?></address>
+											
+												<div style="display: none;" id="editShipping">
+												<form method="post" action="">
+													<p>Street: <input type="text" name="shippingStreet" value="<?php echo $_order->getShippingAddress()->getStreet()[0]; ?>" /></p>
+													<p>City: <input type="text" name="shippingCity" value="<?php echo $_order->getShippingAddress()->getCity(); ?>" /></p>
+													<p>Postcode: <input type="text" name="shippingPostcode" value="<?php echo $_order->getShippingAddress()->getPostcode(); ?>" /></p>
+													<p>Region: 
+													<select name="shippingRegion" title="State" style="" defaultvalue="" >
+														<option value="1" <?php if($_order->getShippingAddress()->getRegionId()=='1') echo 'selected'; ?> >Alabama</option>
+														<option value="2" <?php if($_order->getShippingAddress()->getRegionId()=='2') echo 'selected'; ?> >Alaska</option>
+														<option value="486" <?php if($_order->getShippingAddress()->getRegionId()=='486') echo 'selected'; ?> >American Samoa</option>
+														<option value="4" <?php if($_order->getShippingAddress()->getRegionId()=='4') echo 'selected'; ?> >Arizona</option>
+														<option value="5" <?php if($_order->getShippingAddress()->getRegionId()=='5') echo 'selected'; ?> >Arkansas</option>
+														<option value="6" <?php if($_order->getShippingAddress()->getRegionId()=='6') echo 'selected'; ?> >Armed Forces Africa</option>
+														<option value="7" <?php if($_order->getShippingAddress()->getRegionId()=='7') echo 'selected'; ?> >Armed Forces Americas</option>
+														<option value="8" <?php if($_order->getShippingAddress()->getRegionId()=='8') echo 'selected'; ?> >Armed Forces Canada</option>
+														<option value="9" <?php if($_order->getShippingAddress()->getRegionId()=='9') echo 'selected'; ?> >Armed Forces Europe</option>
+														<option value="10" <?php if($_order->getShippingAddress()->getRegionId()=='10') echo 'selected'; ?> >Armed Forces Middle East</option>
+														<option value="11" <?php if($_order->getShippingAddress()->getRegionId()=='11') echo 'selected'; ?> >Armed Forces Pacific</option>
+														<option value="12" <?php if($_order->getShippingAddress()->getRegionId()=='12') echo 'selected'; ?> >California</option>
+														<option value="13" <?php if($_order->getShippingAddress()->getRegionId()=='13') echo 'selected'; ?> >Colorado</option>
+														<option value="14" <?php if($_order->getShippingAddress()->getRegionId()=='14') echo 'selected'; ?> >Connecticut</option>
+														<option value="15" <?php if($_order->getShippingAddress()->getRegionId()=='15') echo 'selected'; ?> >Delaware</option>
+														<option value="16" <?php if($_order->getShippingAddress()->getRegionId()=='16') echo 'selected'; ?> >District of Columbia</option>
+														<option value="18" <?php if($_order->getShippingAddress()->getRegionId()=='18') echo 'selected'; ?> >Florida</option>
+														<option value="19" <?php if($_order->getShippingAddress()->getRegionId()=='19') echo 'selected'; ?> >Georgia</option>
+														<option value="487" <?php if($_order->getShippingAddress()->getRegionId()=='487') echo 'selected'; ?> >Guam</option>
+														<option value="21" <?php if($_order->getShippingAddress()->getRegionId()=='21') echo 'selected'; ?> >Hawaii</option>
+														<option value="22" <?php if($_order->getShippingAddress()->getRegionId()=='22') echo 'selected'; ?> >Idaho</option>
+														<option value="23" <?php if($_order->getShippingAddress()->getRegionId()=='23') echo 'selected'; ?> >Illinois</option>
+														<option value="24" <?php if($_order->getShippingAddress()->getRegionId()=='24') echo 'selected'; ?> >Indiana</option>
+														<option value="25" <?php if($_order->getShippingAddress()->getRegionId()=='25') echo 'selected'; ?> >Iowa</option>
+														<option value="26" <?php if($_order->getShippingAddress()->getRegionId()=='26') echo 'selected'; ?> >Kansas</option>
+														<option value="27" <?php if($_order->getShippingAddress()->getRegionId()=='27') echo 'selected'; ?> >Kentucky</option>
+														<option value="28" <?php if($_order->getShippingAddress()->getRegionId()=='28') echo 'selected'; ?> >Louisiana</option>
+														<option value="29" <?php if($_order->getShippingAddress()->getRegionId()=='29') echo 'selected'; ?> >Maine</option>
+														<option value="490" <?php if($_order->getShippingAddress()->getRegionId()=='490') echo 'selected'; ?> >Mariana Islands</option>
+														<option value="489" <?php if($_order->getShippingAddress()->getRegionId()=='489') echo 'selected'; ?> >Marshall Islands</option>
+														<option value="31" <?php if($_order->getShippingAddress()->getRegionId()=='31') echo 'selected'; ?> >Maryland</option>
+														<option value="32" <?php if($_order->getShippingAddress()->getRegionId()=='32') echo 'selected'; ?> >Massachusetts</option>
+														<option value="33" <?php if($_order->getShippingAddress()->getRegionId()=='33') echo 'selected'; ?> >Michigan</option>
+														<option value="488" <?php if($_order->getShippingAddress()->getRegionId()=='488') echo 'selected'; ?> >Micronesia</option>
+														<option value="34" <?php if($_order->getShippingAddress()->getRegionId()=='34') echo 'selected'; ?> >Minnesota</option>
+														<option value="35" <?php if($_order->getShippingAddress()->getRegionId()=='35') echo 'selected'; ?> >Mississippi</option>
+														<option value="36" <?php if($_order->getShippingAddress()->getRegionId()=='36') echo 'selected'; ?> >Missouri</option>
+														<option value="37" <?php if($_order->getShippingAddress()->getRegionId()=='37') echo 'selected'; ?> >Montana</option>
+														<option value="38" <?php if($_order->getShippingAddress()->getRegionId()=='38') echo 'selected'; ?> >Nebraska</option>
+														<option value="39" <?php if($_order->getShippingAddress()->getRegionId()=='39') echo 'selected'; ?> >Nevada</option>
+														<option value="40" <?php if($_order->getShippingAddress()->getRegionId()=='40') echo 'selected'; ?> >New Hampshire</option>
+														<option value="41" <?php if($_order->getShippingAddress()->getRegionId()=='41') echo 'selected'; ?> >New Jersey</option>
+														<option value="42" <?php if($_order->getShippingAddress()->getRegionId()=='42') echo 'selected'; ?> >New Mexico</option>
+														<option value="43" <?php if($_order->getShippingAddress()->getRegionId()=='43') echo 'selected'; ?> >New York</option>
+														<option value="44" <?php if($_order->getShippingAddress()->getRegionId()=='44') echo 'selected'; ?> >North Carolina</option>
+														<option value="45" <?php if($_order->getShippingAddress()->getRegionId()=='45') echo 'selected'; ?> >North Dakota</option>
+														<option value="47" <?php if($_order->getShippingAddress()->getRegionId()=='47') echo 'selected'; ?> >Ohio</option>
+														<option value="48" <?php if($_order->getShippingAddress()->getRegionId()=='48') echo 'selected'; ?> >Oklahoma</option>
+														<option value="49" <?php if($_order->getShippingAddress()->getRegionId()=='49') echo 'selected'; ?> >Oregon</option>
+														<option value="491" <?php if($_order->getShippingAddress()->getRegionId()=='491') echo 'selected'; ?> >Palau</option>
+														<option value="51" <?php if($_order->getShippingAddress()->getRegionId()=='51') echo 'selected'; ?> >Pennsylvania</option>
+														<option value="485" <?php if($_order->getShippingAddress()->getRegionId()=='485') echo 'selected'; ?> >Puerto Rico</option>
+														<option value="53" <?php if($_order->getShippingAddress()->getRegionId()=='53') echo 'selected'; ?> >Rhode Island</option>
+														<option value="54" <?php if($_order->getShippingAddress()->getRegionId()=='54') echo 'selected'; ?> >South Carolina</option>
+														<option value="55" <?php if($_order->getShippingAddress()->getRegionId()=='55') echo 'selected'; ?> >South Dakota</option>
+														<option value="56" <?php if($_order->getShippingAddress()->getRegionId()=='56') echo 'selected'; ?> >Tennessee</option>
+														<option value="57" <?php if($_order->getShippingAddress()->getRegionId()=='57') echo 'selected'; ?> >Texas</option>
+														<option value="58" <?php if($_order->getShippingAddress()->getRegionId()=='58') echo 'selected'; ?> >Utah</option>
+														<option value="59" <?php if($_order->getShippingAddress()->getRegionId()=='59') echo 'selected'; ?> >Vermont</option>
+														<option value="492" <?php if($_order->getShippingAddress()->getRegionId()=='492') echo 'selected'; ?> >Virgin Islands</option>
+														<option value="61" <?php if($_order->getShippingAddress()->getRegionId()=='61') echo 'selected'; ?> >Virginia</option>
+														<option value="62" <?php if($_order->getShippingAddress()->getRegionId()=='62') echo 'selected'; ?> >Washington</option>
+														<option value="63" <?php if($_order->getShippingAddress()->getRegionId()=='63') echo 'selected'; ?> >West Virginia</option>
+														<option value="64" <?php if($_order->getShippingAddress()->getRegionId()=='64') echo 'selected'; ?> >Wisconsin</option>
+														<option value="65" <?php if($_order->getShippingAddress()->getRegionId()=='65') echo 'selected'; ?> >Wyoming</option>
+
+													</select></p>
+												   
+													<input type="hidden" name="shippingId" value="<?php echo $_order->getShippingAddress()->getId(); ?>" />
+													
+													<div>
+														<button type="submit" class="action primary">UPDATE</button>
+													</div>
+													</form>
+												</div>
+											</div>
+											
+										</div>
+										<?php endif;?>
+									 
+									 
+									 
+									 
+							</td>
+						 </tr>
+					  <?php endif;?>
+                     </table>
+                    </li>
+                </ol>
+    	</div>
+</div>
+
+   <div class="block-content">
+  	<ol>
+		<div class="col2-set addresses-list">
+    		<div class="col-1 addresses-primary">
+     			<h2><?php  echo __('Subscribed Items') ?></h2>
+     		</div>
+  		</div>
+    <div class="table-wrapper orders-history">
+	  <table id="my-orders-table " class="data table table-order-items">
+       <thead>
+            <tr>
+                <th><?php /* @escapeNotVerified */ echo __('Product ID') ?></th>
+                <th><?php /* @escapeNotVerified */ echo __('Product Name') ?></th>
+                <th><?php /* @escapeNotVerified */ echo __('SKU') ?></th>
+                <!--<th><span class="nobr"><?php /* @escapeNotVerified */ echo __('Product Price') ?></span></th>-->
+                <th><span class="nobr"><?php /* @escapeNotVerified */ echo __('Subscription Amount') ?></span></th>
+                <th class="a-center"><?php /* @escapeNotVerified */ echo __('Qty') ?></th>
+            </tr>
+        </thead>
+		
+		<?php
+			
+			$onlyAutoshipItems = array();
+			foreach($subscription->getItems() as $itm){
+				$onlyAutoshipItems[] = $itm->getPrimaryOrderItemId();
+			}
+			
+		?>
+	  
+        <?php 
+		
+			$i=0; foreach ($_items as $_item):  
+			if(!in_array($_item->getId(),$onlyAutoshipItems)){
+				continue;
+			}
+			$seqId = $_item->getId();?>
+		
+			
+            <?php
+			$productOptions = $_item->getProductOptions();
+			$isRecurringProduct = false;
+			if(isset($productOptions['info_buyRequest']['milople_subscription_type']))
+			{
+				if($productOptions['info_buyRequest']['milople_subscription_type']==$terms->getTermsId())
+					$isRecurringProduct=true;
+			}
+			//if ($_item->getParentItem() || !$isRecurringProduct) continue; else $i++; 
+			if ($_item->getParentItem()) continue; else $i++;
+			?>
+			
+            <?php
+			$price = $terms->getPrice();
+			$termprice = 0;
+			if($terms->getPriceCalculationType() == 1)
+			{
+				$termprice = $_item->getPrice() * $terms->getPrice() /100 ;
+				//$price = $_item->getPrice()  -  $termprice ;
+				$price = $termprice;
+			}
+			
+			?>
+
+      <tbody class="<?php echo $i%2?'even':'odd' ?>">
+				<tr class="headings">
+					<td class='col id' data-th='<?php /* @escapeNotVerified */ echo __('Product ID') ?>'><?php echo __($_item->getId()) ?></td>
+					<td class='col id' data-th='<?php /* @escapeNotVerified */ echo __('Product Name') ?>'><?php echo __($_item->getName()) ?></td>
+					<td class='col id' data-th='<?php /* @escapeNotVerified */ echo __('SKU') ?>'><?php echo __($_item->getSku()) ?></td>
+					<!--<td class='col id' data-th='<?php /* @escapeNotVerified */ echo __('Product Price') ?>'><span class="nobr"><?php echo $this->_currency->currency($_item->getOriginalPrice(),true,false); ?></span></td>-->
+          <td class='col id' data-th='<?php /* @escapeNotVerified */ echo __('Subscription Amount') ?>'><?php echo $this->_currency->currency($price,true,false);?></td>
+					<td class='col id a-center' data-th='<?php /* @escapeNotVerified */ echo __('Qty') ?>'><?php echo __((int)$_item->getQtyOrdered()) ?></td>
+				</tr>
+      </tbody>
+        <?php endforeach; ?>
+    </table>
+  </div>
+   </ol>
+  </div>
+     <!--<div class="col2-set generic-box">
+		<?php //if ($this->getSubscription()->getStatus() == \Milople\Recurringandsubscriptionpayments\Model\Subscription::STATUS_ENABLED || $this->getSubscription()->getStatus() == \Milople\Recurringandsubscriptionpayments\Model\Subscription::STATUS_SUSPENDED_BY_CUSTOMER): ?>
+		<ol>
+			<li>
+				<?php if($this->getSubscription()->getStatus() != \Milople\Recurringandsubscriptionpayments\Model\Subscription::STATUS_ENABLED): ?>
+					<em><?php  echo __('If you want to suspend or cancel this subscription, please click')?>
+					<a href="<?php echo $block->getUrl('contact');?>"><?php echo __("here")?></a>.</em>
+				<?php endif; ?>
+			</li>
+		</ol>
+     </div>-->
+	
+	<div class="col2-set generic-box">
+		<?php if ($this->canSuspend() || $this->canActive()): ?>
+		<ol>
+			<li>
+				<?php if(($this->getSubscription()->getStatus() == \Milople\Recurringandsubscriptionpayments\Model\Subscription::STATUS_ENABLED) && $this->canSuspend()): ?>
+                 <a class="other_a" id="cancel-subscription" href="<?php echo $block->getUrl('*/*/changestatus', array('id' => $this->getSubscription()->getId(),"status"=>0));?>"><?php echo __("Suspend Subscription")?></a>
+				 <script>
+					require([
+						"jquery",
+						"mage/mage"
+					], function($){
+						$("#cancel-subscription").click(function(e){
+							if (confirm('Are you want to Suspend Subscription?')) {								
+							} else {								
+								e.preventDefault();
+							}
+						});
+					});
+				</script>
+				<?php elseif(($this->getSubscription()->getStatus() == \Milople\Recurringandsubscriptionpayments\Model\Subscription::STATUS_SUSPENDED_BY_CUSTOMER) || ($this->getSubscription()->getStatus() == \Milople\Recurringandsubscriptionpayments\Model\Subscription::STATUS_SUSPENDED) && $this->canActive()): ?>
+					
+					 <a  class="other_a" id="cancel-subscription" href="<?php echo $block->getUrl('*/*/changestatus', array('id' => $this->getSubscription()->getId(),"status"=>1));?>"><?php echo __("Activate Subscription")?></a>
+					 <script>
+						require([
+							"jquery",
+							"mage/mage"
+						], function($){
+							$("#cancel-subscription").click(function(e){
+								if (confirm('Are you want to activate subscription?')) {								
+								} else {								
+									e.preventDefault();
+								}
+							});
+						});
+					</script>
+				<?php endif; ?>
+			</li>
+		</ol>
+		<?php endif; ?>
+	</div>
+	
+	
+	
+ 	<!--<div class="button-set">
+            <a href="<?php echo $block->getUrl('*/*/subscription') ?>" class="left">&laquo; <?php echo __('Back') ?></a>
+     </div>-->
+</div>
+<?php
+else:  ?>
+<script>
+require([
+	"jquery",
+	"mage/mage"
+], function($){
+
+   	$($.mage.redirect("<?php /* @escapeNotVerified */ echo $block->getUrl('customer/account/login'); ?>", "assign",0));
+});
+
+</script>
+<?php endif;
+?>
+
+<div id="changeDate" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h4 class="modal-title">Change Upcoming Payment Date</h4>
+      </div>
+      <div class="modal-body">
+        <form type="post" action="">
+			<table>
+				<tbody>
+				<tr>
+					<td>Date: </td>
+					<td>
+					<input type="date" name="next_billing_date" min="<?php echo date('Y-m-d',strtotime(' +2 day')) ?>" required="required">
+					<input type="hidden" name="seqId" value="<?= $seqId; ?>">
+					<input type="hidden" name="subscription" value="<?= $this->getSubscription()->getId(); ?>">
+					<input type="hidden" name="id" value="<?= $currenct_customer; ?>">
+					
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<td><br></td>
+					<td><br></td>
+				</tr>
+				<tr>
+					<td><button type="submit" class="button">Submit</button></td>
+					<td class="res"></td>
+				</tr>
+				
+			</tbody></table>
+		</form>
+		
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<div id="changeSmethod" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h4 class="modal-title">Change Shipping Method:</h4>
+      </div>
+      <div class="modal-body">
+        <form type="post" action="">
+			
+				<select class=" required-entry select" name="shipping_method" >
+					<option value="domestic_standard">Standard</option>
+					<option value="domestic_secondday">Second Day Air</option>
+					<option value="domestic_nextday">Next Day Air</option>
+				</select>
+					<input type="hidden" name="id" value="<?= $this->getSubscription()->getId(); ?>">
+					<br><br>
+					<p><button type="submit" class="button">Submit</button></p>
+					<p class="res"></p>
+				
+				
+			
+		</form>
+		
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<script>
+require([
+    'jquery',
+    'accordion'  // the alias for "mage/accordion"
+], function ($) {
+    $("#changecard").click(function() {
+      document.getElementById('cardropdown').disabled=false;
+      document.getElementById('save').disabled=false;
+    }),
+        $("#save").click(function(){
+        var selectedcard = $(".cards option:selected").val();
+        var newdefaultcart = selectedcard.slice(-4);
+        var increment_id=document.getElementById('increment_id').value;
+        	$.ajax(
+						{
+							 url:'http://milopleo.nextmp.net/development/prakhar/m2recurring/recurringandsubscriptionpayments/stripe/changecard',
+							 type: 'Post',
+							 dataType : 'json',
+               showLoader: true ,
+							 data: { defaultcard : newdefaultcart, parent_id : increment_id }
+						}).done(function(transport) {
+                showLoader : false,
+								document.getElementById('cardropdown').disabled=true;
+              document.getElementById('save').disabled=true;
+							 }
+						)
+    })
+	
+	jQuery(document).on('submit','#changeDate form',function(e){
+			e.preventDefault();
+			jQuery.ajax({
+				type: 'post',
+				url: '/autoship/index',
+				data: jQuery(this).serialize(),
+				showLoader: true,
+				success: function (data) {
+				 jQuery('body').trigger('processStop');
+					if(data == '1'){
+						jQuery('.res').html('<p style="padding: 7px;color: #5da205;">Upcoming payment date successfully changed.</p>')
+					}else{
+						jQuery('.res').html('<p style="padding: 7px;color: #f00;">An error occured! Please try again.</p>')
+					}
+				setTimeout(function(){ window.location.reload(); }, 2000);
+				}
+			});
+	});
+	
+	
+	    jQuery("#updateCC").submit(function(e) {
+        var form = jQuery(this);
+        var url = form.attr('action');
+        jQuery.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),			   // serializes the form's elements.
+			   showLoader: true,
+               success: function(data)
+               {
+                   //alert(data); // show response from the php script.
+                   
+                   if(data=='1'){
+                       jQuery('.cardMsg').html('<span style="color: #76b51b;">Credit card updated successfully!</span>');
+                       jQuery("#updateCC")[0].reset();
+                       
+                     //  setTimeout(function(){ location.reload(); },2000);
+                       
+                   }else{
+                       jQuery('.cardMsg').html('<span style="color: #f00;">'+data+'</span>');
+                   }
+				 jQuery('body').trigger('processStop');
+               }
+             });
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+	
+	
+	
+	jQuery(document).on('submit','#changeSmethod form',function(e){
+			e.preventDefault();
+			jQuery.ajax({
+				type: 'post',
+				url: '/autoship/index/updateshipping',
+				data: jQuery(this).serialize(),
+				showLoader: true,
+				success: function (data) {
+				 jQuery('body').trigger('processStop');
+					if(data == '1'){
+						jQuery('.res').html('<br><p style="padding: 7px;color: #5da205;">Upcoming payment date successfully changed.</p>');
+						setTimeout(function(){ window.location.reload(); }, 2000);
+					}else{
+						jQuery('.res').html('<p style="padding: 7px;color: #f00;">'+data+'</p>')
+					}
+				  
+				}
+			});
+	});
+	
+	
+  });
+</script>
+
+
+<script>
+require(['jquery'], function ($) {
+	
+	jQuery(document).on('click','#aEditBilling',function(){
+		jQuery('#editBilling').show();
+		jQuery('#billingAddress').hide();
+	});
+	jQuery(document).on('click','#aEditShipping',function(){
+		jQuery('#editShipping').show();
+		jQuery('#shippingAddress').hide();
+	});
+	
+});
+</script>
+

@@ -1,0 +1,258 @@
+<?php
+
+/**
+* Product Bundle Product template
+* Designed by VsiDhaka
+*/
+?>
+
+<?php
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$productCollection = $objectManager->create('Magento\Catalog\Model\ProductFactory');
+$currentProduct = $objectManager->get('Magento\Framework\Registry')->registry('current_product'); 
+$productId = $currentProduct->getId();
+$_product = $productCollection->create()->load($productId);
+
+
+$selectionCollection = $_product->getTypeInstance(true)
+	->getSelectionsCollection(
+		$_product->getTypeInstance(true)->getOptionsIds($_product),
+		$_product
+	);
+	
+$selectionItems = array();
+	foreach ($selectionCollection as $proselection) {
+		$selectionArray = array();
+		$selectionArray['name'] = $proselection->getName();
+		$selectionArray['short_description'] = $proselection->getShortDescription();
+		$selectionArray['product_id'] = $proselection->getProductId();
+		$selectionArray['product_url'] = $proselection->getProductUrl();
+		$selectionArray['thumbnail'] = $proselection->getThumbnail();
+		$selectionItems[] = $selectionArray;
+	}
+	
+
+  
+ ?>
+
+<style>
+  
+    .headerImage_wellnesss{background: url(/pub/media/catalog/product/<?php  echo $_product->getMediaGalleryImages()->getItemByColumnValue('label','page header')->getFile(); ?>)no-repeat;background-size: cover;min-height: 169px;}
+
+    select#milople_rsp_type{float: right !important;}
+    select#milople_rsp_type option:hover:before {left: 57px;}
+    .packagePrice_p .price-box{display: inline-block !important;}
+    .packagePrice_p .price-box .price{color: #3399cc;}
+    .product-info .product-name{font-size: 22px !important; color: #5a523f !important;}
+    p em{ font-style: normal;}
+    .packageContainer .products-grid .product-info .desc{font-size: 14px;}
+	p.moreInfo a {text-decoration: none;}
+	.product_img{width: auto; height: 242px;}
+	.product-name{font-size: 21px;}
+	.selectpicker {width: 84%;}
+
+    
+</style>
+
+
+
+<div class="headerImage_wellnesss">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+				<?= $_product->getDescription(); ?>
+			</div>
+             <div class="col-md-4"></div>
+        </div>
+    </div>
+</div> <br><br>
+
+    <div class="packageContainer">
+	
+		
+		<?php
+			
+			$cartHelper = $this->helper('Magento\Checkout\Helper\Cart');
+			$addToCartUrl = $cartHelper->getAddUrl($_product);
+			
+		?>
+	
+        <!--<form id="bundle_form" action="/autoship/index/bundle" method="post"  >-->
+        <form id="bundle_form" action="<?php echo $addToCartUrl; ?>" method="post"  >
+
+			<input type="hidden" name="product" value="<?= $_product->getId(); ?>" />
+			
+			<input id="bundle_price" type="hidden" name="price" value="" />
+			
+			
+			<?php echo $block->getBlockHtml('formkey')?>
+			
+			
+			
+			
+			<?php
+				$productBundleOptions = $_product->getProductOptions()['info_buyRequest'];
+				$bundleOptionArray = $productBundleOptions['bundle_option'];
+				
+				var_dump($bundleOptionArray);
+				exit;
+				
+				foreach ($bundleOptionArray as $bundleOptionArrayKey => $bundleOptionArrayValue) { ?>
+					<input type="hidden" class="bundle-option-<?= $bundleOptionArrayKey ?>  product bundle option" name="bundle_option[<?= $bundleOptionArrayKey ?>]" value="<?= $bundleOptionArrayValue ?>" id="bundle-option-<?= $bundleOptionArrayKey."-".$bundleOptionArrayValue ?>" checked="checked" aria-required="true">
+			<?php } ?>
+			
+
+                <div class="container">
+				<div class="row">
+				
+					<?php foreach ($selectionItems as $item): ?>
+						<div class="col-md-4 product_grid">
+							<p><img class="product_img" src="<?= '/pub/media/catalog/product/'.$item['thumbnail'] ?>" /></p>
+							<h2 class="product-name"><?= $item['name'] ?></h2>
+							<div class="desc short">
+									<?= $item['short_description'] ?>
+							</div><br>
+
+								<?php
+										$_sproduct = $objectManager->get('Magento\Catalog\Model\Product')->load($item['product_id']);
+										$customOptions = $objectManager->get('Magento\Catalog\Model\Product\Option')->getProductOptionCollection($_sproduct);
+										$optStr = "";
+										foreach($customOptions as $optionKey => $optionVal):
+											$optStr .= "<div class='custom-options'>";
+												$optStr .= "<select class='selectpicker' name='options[".$optionVal->getId()."]'>";
+												foreach($optionVal->getValues() as $valuesKey => $valuesVal) {
+												$optStr .= "<option data-price=".number_format($valuesVal->getPrice(),2)." value='".$valuesVal->getId()."'>$".number_format($valuesVal->getPrice(),2).' - '.$valuesVal->getTitle()."</option>";
+													}
+
+											$optStr .= "</select></div>";
+										endforeach;
+										   echo($optStr );
+									?>
+								
+							<br>
+							<p class="moreInfo">
+							 <a href="<?= $item['product_url'] ?>"><span>More info</span></a>
+							</p>
+						</div>
+						
+					<?php endforeach; ?>	
+
+		
+				</div> <br><br><br>
+				
+				
+				
+				
+				
+                    <div class="row border_top_green">
+                        <div class="col-md-2 col-xs-4">
+                             <img class="percentageImage" src="/pub/media/img/TN-Wellness-Save20.png" border="0" alt="Save 20%" />
+                        </div>
+                        <div class="col-md-5 col-xs-8">
+                             <h3 class="text-uppercase"><?= $_product->getName()?></h3>
+                                <ul>
+                                    <li class="note">(All products above)</li>
+                                    <li class="discount">Save %</li>
+                                    <li class="packagePrice_p"><span id="label">Bundle Price:&nbsp;</span> <span id="total"></span></li>
+									<li class="packagePrice_p"><span id="label">Discounted Price:&nbsp;</span> <span id="discount"></span></li>
+                                </ul>
+                        </div>
+                        <div class="col-md-5">
+                            <p class="packageSavings_p">You save <span id="product-price-savings">$0.00</span></p>     
+                            <div class="btn-group addtocart" role="group" aria-label="...">
+                                  <button type="button" class="btn btn-default btn_minus">-</button>
+                                  <input pattern="\d*" name="qty"  type="number" class= "add_to_cart_input" value="1" />
+                                  <button type="button" class="btn btn-default btn_plus">+</button>
+                                  <button type="submit" class="btn btn-default">Add to Cart</button>
+                            </div>
+                            <div id="recurring-options" class="white_content" >
+								   <div class="autoShip">
+										<label class="switch">
+										  <input type="checkbox">
+										  <span class="slider_btn round"></span>
+										</label> Save 5% with Auto Ship<i class="fa fa-info-circle info" data-toggle="modal" data-target="#autoShip"></i>
+										<br class="visible-sm">
+									</div>
+											
+									<div class="rsp-subscription">
+									   <select name="milople_rsp_type" style="width:160px;" id="milople_rsp_type">
+										   <option class="offswitch" value="-1"></option>
+													  <option value="4">Ship Every 1 Day</option>
+												<option value="5">Ship Every 2 Day</option>
+												<option value="6">Ship Every 3 Day</option>
+											 </select>
+									   
+									</div>
+								   
+                        </div>
+
+                </div>                   
+
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+require(['jquery'],function($){
+	$(document).ready(function(){
+		var data = $('.product_grid').find('.selectpicker option:selected');
+		var totalPrice = 0;
+		data.each(function(){
+			var price = parseFloat($(this).attr('data-price'));
+			 totalPrice = price+totalPrice;
+		});
+		var saveAmount = totalPrice*0.20;
+		
+		jQuery('#product-price-savings').html('<span>$'+saveAmount.toFixed(2)+'</span>');
+		jQuery('#total').html('<del>$'+totalPrice.toFixed(2)+'</del>');
+		jQuery('#discount').html('<span>$'+(totalPrice-saveAmount).toFixed(2)+'</span>');
+		jQuery('#bundle_price').val((totalPrice-saveAmount).toFixed(2));
+		
+	});
+	
+	jQuery(document).on('change','.selectpicker',function(){
+		var data = $('.product_grid').find('.selectpicker option:selected');
+		var totalPrice = 0;
+		data.each(function(){
+			var price = parseFloat($(this).attr('data-price'));
+			 totalPrice = price+totalPrice;
+		});
+		var saveAmount = totalPrice*0.20;
+		
+		jQuery('#product-price-savings').html('<span>$'+saveAmount.toFixed(2)+'</span>');
+		jQuery('#total').html('<del>$'+totalPrice.toFixed(2)+'</del>');
+		jQuery('#discount').html('<span>$'+(totalPrice-saveAmount).toFixed(2)+'</span>');
+		jQuery('#bundle_price').val((totalPrice-saveAmount).toFixed(2));
+	});
+	
+	
+	
+	/*
+	jQuery(document).on('submit','#bundle_form',function(e){
+		e.preventDefault();
+
+		var form= jQuery(this);
+		jQuery.ajax({
+			type: 'post',
+			url: form.attr('action'),
+			data: form.serialize(),
+			success: function (data) {
+				console.log(data);
+			}
+		});
+		
+	})
+	*/
+
+	
+	
+});
+</script>
+
+

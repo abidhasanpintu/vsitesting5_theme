@@ -1,0 +1,68 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+<?php $_product = $block->getProduct();?>
+<style>
+.subscriptionBox {
+    display: none;
+}
+.product-info-price {
+    display: none !important;
+}
+
+.page-title {
+    color: #00631F;
+    font-size: 26px;
+    margin-top: 10px;
+	font-family:"Raleway","Helvetica Neue", Verdana, Arial, sans-serif;
+}
+.product.data.items > .item.content{
+	margin-top: 40px !important;
+}
+.page-layout-1column .product-info-main {
+    width: 70% !important;
+}
+.page-layout-1column .product.media {
+    width: 30% !important;
+}
+.fotorama__img {
+	top: 36% !important;
+}
+.fotorama__stage__shaft {
+    min-height: 366px;
+}
+.zoomWindowContainer>div{height:350px !important;}
+.data.item.title a {
+    text-transform: uppercase;
+}
+
+@media only screen and (max-width: 768px) {
+    .fotorama__stage__shaft {
+        width: 230px !important;
+    }
+    .page-layout-1column .product.media {
+        width: 100% !important;
+    }
+    .fotorama__stage__frame.fotorama__active.fotorama_vertical_ratio.fotorama__loaded.fotorama__loaded--img {
+        height: 280px;
+    }
+}
+</style>
+
+<script>
+ require(['jquery', 'jquery/ui'], function($){
+	 setTimeout(function(){
+     jQuery('.product.data.items').append('<div class="data item title "><a class="data switch" style="background: #9bca3c; color: #fff !important;" href="https://vsitesting5.com/<?php echo $_product->getUrlKey(); ?>">BUY NOW</a></div>');
+	 },2000);
+ });
+
+
+</script>
+

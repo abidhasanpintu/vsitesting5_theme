@@ -1,0 +1,123 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->get('Magento\Customer\Model\Session');
+
+$cart = $objectManager->get('\Magento\Checkout\Model\Cart'); 
+$itemsCollection = $cart->getQuote()->getItemsCollection();
+$itemsVisible = $cart->getQuote()->getAllVisibleItems();
+$cartItems = $cart->getQuote()->getAllItems();
+
+if($customerSession->isLoggedIn()): 
+$customerId = $customerSession->getId();
+$autoShipItems = array();
+$cartItemsSku = array();
+
+
+$orderCollection = $objectManager->create('\Magento\Sales\Model\ResourceModel\Order\Collection');
+$orderCollection->addAttributeToFilter('customer_id',$customerId)
+	        ->addAttributeToFilter('status','complete')
+			->load();
+
+
+
+
+foreach($orderCollection as $order){
+	foreach($order->getAllItems() as $item){
+		
+		$sku = $item->getSku();
+		
+		foreach($item->getProductOptions()['info_buyRequest'] as $key => $val){
+			
+			if($key == 'milople_select_subscription_type'){
+				$autoShipItems[$sku] = '';
+			}
+			
+		}
+	}
+
+}
+
+foreach($cartItems as $item) {
+	$cartItemsSku[$item->getSku()] = $item->getName();
+}
+
+$result = array_intersect_key($cartItemsSku,$autoShipItems);
+
+
+?>
+<style>
+	#AutoshipPopup{width:100%;display: none;}
+	.custom_modal{
+		position: fixed;
+		z-index: 9999999;
+		width: 500px;
+		top: 50%;
+		left: 50%;
+		margin-top: -100px;
+		margin-left: -250px;
+		box-shadow: 0px 5px 19px 5px;
+		border-bottom: 8px solid #8cc740;
+	}
+	.ccgreen{color:#70aa19;}
+	
+	@media only screen and (max-width: 600px) {
+	  .custom_modal {
+		width: 300px;
+		margin-left: -150px;
+	  }
+	}
+  
+  </style>
+  
+  <div id="AutoshipPopup" >
+    <div class="modal-dialog custom_modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close skipBtn" data-dismiss="modal">&times;</button>
+		  <h4 class="ccgreen">This product is already on autoship!</h4>
+        </div>
+        <div class="modal-body">
+           <p>You have already purchased <b>
+		
+		<?php  if(!empty($result)){
+			   $i = 0; $comma = '';
+				foreach($result as $key => $val){
+					$i++;
+					if($i > 1){ $comma = ', ';}
+					echo $comma.$val;
+				}
+			} ?></b> with autoship. You can skip this message if you would like to order this product using autoship again, or you can log into your account to update your current autoship order of this product.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="primary action skipBtn" data-dismiss="modal">Skip</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+<?php if(!empty($result)): ?>
+		<script>
+				require(['jquery'], function ($) {
+					$(document).ready(function() {
+						if(sessionStorage.getItem("autoship_popup") != 'yes'){
+							$('#AutoshipPopup').show(500);
+						}
+						
+					});
+					
+					$(document).on('click','.skipBtn',function(){
+						$('#AutoshipPopup').hide(500);
+						if (typeof(Storage) !== "undefined") {
+							sessionStorage.setItem("autoship_popup", "yes");
+						} 
+					});
+					
+					
+					
+				});
+		</script>
+<?php endif; ?>
+
+
+<?php endif; ?>

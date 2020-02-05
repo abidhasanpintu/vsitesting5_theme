@@ -1,0 +1,204 @@
+
+      <style>
+			@font-face {font-family: helvetica-neue-thin; src: url(/helveticaNeue-thin.ttf);}
+            /*.wrapper {margin-top: 91px;}*/
+            .email-subscribe.e-subscribe-container {margin-top: 40px;}
+            .header_myacc .page-title h1{font-family:helvetica-neue-thin; }
+            .header_myacc .page-title h1 span{color:#fff;font-weight:normal;}
+            .header_myacc .page-title h1 .first_w{font-size: 29pt;margin-right: 17px;}
+            .header_myacc .page-title h1 .last_w{font-size: 36pt}
+            .header_myacc_bacground{ margin-top: 9px; background:url(/pub/media/wysiwyg/my-account/TN-Hdr-NoWords.png)no-repeat;background-size: cover;height: 112px;}
+            
+			.header_success_bacground {margin-top: 5px;background: url(/pub/media/wysiwyg/my-account/h_success.png)no-repeat;
+                  background-size: cover;height: 112px;background-position: right;}
+			.catalog-product-view .col-main{width: 100%;}
+			.page-title-wrapper {display: none;}
+			.account td.col.actions a.action.view,.account td.col.actions a.action.order {
+				background: #99c455;
+				color: #fff;
+				border-radius: 3px;
+				padding: 4px 8px;
+				margin-right: 13px;
+				font-size: 12px; 
+				text-transform: uppercase;
+			}
+			.account .block-title.order {
+				padding-bottom: 25px;
+				text-transform: uppercase;
+			}
+			.account .block-title.order strong{
+				font-weight: 100 !important;
+				font-size: 16px !important;
+			} 
+			.account #my-orders-table thead tr {
+				background: #f2f4de;
+			}
+        </style>
+        
+
+      <?php $urlParm = $_SERVER['REQUEST_URI']; if (strpos($urlParm, 'customer/account/login') !== false): ?>
+			<style>.rm_duplicate{display:none;}.mt-025{margin-top:25px;}</style>
+                    <div class="header_myacc_bacground header_myacc mt-025">
+                        <div class="page-title container">
+                            <h1><span class="first_w"></span><span class="last_w">LOGIN / REGISTER</span></h1>
+                        </div>
+                    </div>
+					
+			 <?php elseif(strpos($urlParm, 'customer/account/createpassword') !== false): ?>
+			 <style>.rm_duplicate{display:none;}.mt-4{margin-top:-4px;}</style>
+                <div class="headerImageContainer account clearfix mt-4">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="last_w">RESET</span><span class="first_w"> PASSWORD</span></h1>
+                        </div>
+                    </div>
+                </div>	
+				
+				<?php elseif(strpos($urlParm, 'checkout/onepage/success') !== false): ?>
+			 <style>.rm_duplicate{display:none;}.mt-4{margin-top:-4px;}</style>
+                <div class="headerImageContainer account clearfix mt-4">
+                    <div class="header_success_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="last_w">THANK YOU</span><span class="first_w"> For Your Purchase</span></h1>
+                        </div>
+                    </div>
+                </div>
+					
+            <?php elseif(strpos($urlParm, 'customer/account/create') !== false): ?> 
+			<style>.rm_duplicate{display:none;}.mt-4{margin-top:-4px;}</style>
+                <div class="headerImageContainer account clearfix mt-4">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="last_w">CREATE</span><span class="first_w">  AN ACCOUNT</span></h1>
+                        </div>
+                    </div>
+                </div>
+             
+            <?php elseif(strpos($urlParm, 'customer/account/forgotpassword') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="last_w">FORGOT</span><span class="first_w">  YOUR PASSWORD?</span></h1>
+                        </div>
+                    </div>
+                </div>
+
+            <?php elseif(strpos($urlParm, 'customer/account/logoutSuccess') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">YOU ARE NOW</span><span class="last_w">LOGGED OUT!</span></h1>
+                        </div>
+                    </div>
+                </div>
+          <?php endif; ?> 
+
+ <?php $urlParm = $_SERVER['REQUEST_URI']; if (strpos($urlParm, 'sales/order') !== false): ?>
+            <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">ORDER</span><span class="last_w">HISTORY</span></h1>
+                        </div>
+                    </div>
+            </div>  
+
+              <?php elseif(strpos($urlParm, 'autoship') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">MY</span><span class="last_w">ANIMALS</span></h1>
+                        </div>
+                    </div>
+                </div>    
+                
+              <?php elseif(strpos($urlParm, 'customer/address') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">ADDRESS</span><span class="last_w">BOOK</span></h1>
+                        </div>
+                    </div>
+                </div>    
+             <?php elseif(strpos($urlParm, 'review/customer') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">MY PRODUCT</span><span class="last_w">REVIEWS</span></h1>
+                        </div>
+                    </div>
+                </div>    
+             <?php elseif(strpos($urlParm, 'wishlist') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">MY</span><span class="last_w">WISHLIST</span></h1>
+                        </div>
+                    </div>
+                </div>     
+            <?php elseif(strpos($urlParm, 'newsletter/manage') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">NEWSLETTER</span><span class="last_w">SUBSCRIPTIONS</span></h1>
+                        </div>
+                    </div>
+                </div>    
+   
+             <?php elseif(strpos($urlParm, 'affiliate/customer_affiliate/') !== false): ?> 
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_affiliate_bacground">
+                        <div class="page-title container">
+                            <h1><span class="first_w">AFFILIATE</span><span class="last_w">PROGRAM</span></h1>
+                        </div>
+                    </div>
+              </div> 
+              
+
+            <?php elseif(strpos($urlParm, 'customer/account/') !== false): ?>
+                <div class="headerImageContainer account clearfix rm_duplicate">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">MY</span><span class="last_w">ACCOUNT</span></h1>
+                        </div>
+                    </div>
+                </div> 
+
+            <?php elseif(strpos($urlParm, 'recurringandsubscriptionpayments/customer/subscription/') !== false): ?>
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">MANAGE</span><span class="last_w">AUTOSHIP</span></h1>
+                        </div>
+                    </div>
+                </div> 
+		
+            <?php elseif(strpos($urlParm, 'downloadable/customer/products/') !== false): ?>
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">DOWNLOADABLE</span><span class="last_w">PRODUCTS</span></h1>
+                        </div>
+                    </div>
+                </div> 
+
+            <?php elseif(strpos($urlParm, 'vault/cards/listaction/') !== false): ?>
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">PAYMENT</span><span class="last_w">METHODS</span></h1>
+                        </div>
+                    </div>
+                </div>
+
+            <?php elseif(strpos($urlParm, 'paypal/billing_agreement/') !== false): ?>
+                <div class="headerImageContainer account clearfix">
+                    <div class="header_myacc_bacground header_myacc">
+                        <div class="page-title container">
+                            <h1><span class="first_w">BILLING</span><span class="last_w">AGREEMENT</span></h1>
+                        </div>
+                    </div>
+                </div> 				
+
+    <?php endif; ?> 			 
+			 
+			 

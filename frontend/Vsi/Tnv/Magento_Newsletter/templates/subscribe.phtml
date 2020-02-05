@@ -1,0 +1,21 @@
+<!-- Footer Section --> 
+<section  class="email-subscribe e-subscribe-container">
+        <div class="container e-subscribe">
+          <div class="row">
+            <div class="col-md-8 col-sm-12">
+                <h4>Get all our <b>PROMOTIONS</b> straight to your inbox! </h4>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <form class="form-inline" action="<?php echo $this->getFormActionUrl() ?>" method="post" id="newsletter-validate-detail" >
+                      <?php echo $this->getBlockHtml('formkey') ?>
+                <div class="input-group">
+                    <input type="email" autocapitalize="off" autocorrect="off" spellcheck="false" name="email" id="newsletter" title="<?php // echo Mage::helper('core')->quoteEscape($this->__('Sign up for our newsletter')) ?>"  class="form-control input-text required-entry validate-email" size="50" placeholder="Enter your email..." required>
+                <div class="input-group-btn">
+                    <button type="submit" title="<?php // echo Mage::helper('core')->quoteEscape($this->__('Subscribe')) ?>" class="btn btn-danger">SIGN UP TODAY!</button>
+                </div>
+                </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </section>

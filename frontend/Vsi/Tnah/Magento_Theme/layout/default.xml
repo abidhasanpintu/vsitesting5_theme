@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="header.panel">
+            <block class="Magento\Framework\View\Element\Html\Links" name="header.links">
+                <arguments>
+                    <argument name="css_class" xsi:type="string">header links</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceBlock name="logo">
+            <arguments>
+                <argument name="logo_img_width" xsi:type="number">148</argument>
+                <argument name="logo_img_height" xsi:type="number">43</argument>
+            </arguments>
+        </referenceBlock>
+
+		
+		<referenceContainer name="footer-container">
+            <container name="footer" as="footer" label="Page Footer" htmlTag="div" htmlClass="footer-bg">
+                <block class="Magento\Theme\Block\Html\Footer" name="main_footer" template="Magento_Theme::html/footer.phtml"/>
+			</container>
+        </referenceContainer>
+		
+		
+        <referenceBlock name="report.bugs" remove="true"/>
+        <move element="copyright" destination="before.body.end"/>
+		
+		<referenceBlock name="header.container">
+			<block class="Magento\Framework\View\Element\Template" name="script.design" after="-" template="Webfitter_Catalog::design.phtml"/>
+		</referenceBlock>
+		
+		<!--- HEADER SECTION -->
+		<move element="minicart" destination="navigation.sections" />
+		<move element="top.search" destination="navigation.sections" />
+		<move element="header.links" destination="navigation.sections" />
+		<referenceContainer name="header.panel.wrapper" remove="true"/>
+		
+		<referenceBlock name="sale.reorder.sidebar" remove="true"/>
+		
+    </body>
+</page>

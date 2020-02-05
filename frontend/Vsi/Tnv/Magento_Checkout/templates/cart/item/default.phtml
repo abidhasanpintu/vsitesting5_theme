@@ -1,0 +1,307 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $block \Magento\Checkout\Block\Cart\Item\Renderer */
+
+$_item = $block->getItem();
+$product = $_item->getProduct();
+$isVisibleProduct = $product->isVisibleInSiteVisibility();
+/** @var \Magento\Msrp\Helper\Data $helper */
+$helper = $this->helper('Magento\Msrp\Helper\Data');
+$canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinimalPriceLessMsrp($product);
+?>
+
+<?php 
+//** * Code for autoship * **/
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+$autoShip = $objectManager->get('Vsi\Autoship\Model\Autoship');
+$isAutoShip = $autoShip->hasAutoship($_item->getProduct()->getId());
+$isAutoShipSelected = $autoShip->isAutoshipSelected($_item);
+?>
+<style>
+.removeSpan span {display: block;opacity: 0;line-height: 0;}
+.save_20 {
+    color: #da7c33;
+    margin: 0;
+    padding: 25px;
+    font-size: 15px;
+	margin-left: 11px;
+}
+.save_20 span{text-transform:uppercase;font-weight:bold;}
+.save_20_div {
+    background: url("/img/save_promo _blank.png")no-repeat;
+    background-size: cover;
+    width: 202px;
+    height: 100px;
+    overflow: hidden;
+  -webkit-animation-name: example;
+  -webkit-animation-duration: 3s; 
+   animation-name: example;
+   animation-duration: 3s;
+   animation-iteration-count: 1;
+}
+
+
+@-webkit-keyframes example {
+  from {height:0px;}
+  to {height:100px;}
+}
+
+@keyframes example {
+  from {height:0px;}
+  to {height:100px;}
+}
+
+@media only screen and (min-width: 768px) {
+  .reduce_padding{padding: 20px 8px 0px 0 !important;}
+}
+@media only screen and (max-width: 768px) {
+  .reduce_padding{padding: 10px 0px 0px 90px !important;}
+  .save_20_div {margin: 0 !important;width: 100%;background: none;}
+  .save_20 {padding: 0;}
+}
+</style>
+
+<tbody class="cart item">
+    <tr class="item-info item-actions">
+        <td data-th="<?= $block->escapeHtml(__('Item')) ?>" class="col item reduce_padding">
+            <?php if ($block->hasProductUrl()):?>
+                <a href="<?= /* @escapeNotVerified */ $block->getProductUrl() ?>"
+                   title="<?= $block->escapeHtml($block->getProductName()) ?>"
+                   tabindex="-1"
+                   class="product-item-photo">
+            <?php else:?>
+                <span class="product-item-photo">
+            <?php endif;?>
+            <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
+            <?php if ($block->hasProductUrl()):?>
+                </a>
+            <?php else: ?>
+                </span>
+            <?php endif; ?>
+            <div class="product-item-details">
+                <strong class="product-item-name">
+                    <?php if ($block->hasProductUrl()):?>
+                        <a href="<?= /* @escapeNotVerified */ $block->getProductUrl() ?>"><?= $block->escapeHtml($block->getProductName()) ?></a>
+                    <?php else: ?>
+                        <?= $block->escapeHtml($block->getProductName()) ?>
+                    <?php endif; ?>
+                </strong>
+                
+                    <div class="product-cart-sku">
+						<dl class="item-options">
+							<dt>SKU</dt>
+                            <dd class="removeSpan"><?= $_item->getSku() ?></dd>
+						</dl>
+						
+					</div>
+                
+                <?php if ($_options = $block->getOptionList()):?>
+                    <dl class="item-options">
+                        <?php $i = 0; foreach ($_options as $_option) :  $i++;
+							if($i > 1) continue; ?>
+                          
+						  <?php $_formatedOptionValue = $block->getFormatedOptionValue($_option) ?>
+                            <dt><?= $block->escapeHtml($_option['label']) ?></dt>
+                            <dd class="removeSpan">
+                                <?php if (isset($_formatedOptionValue['full_view'])): ?>
+                                    <?= /* @escapeNotVerified */ $_formatedOptionValue['full_view'] ?>
+                                <?php else: ?>
+                                    <?= $block->escapeHtml($_formatedOptionValue['value'], ['span']) ?>
+                                <?php endif; ?>
+                            </dd>
+							
+                        <?php endforeach; ?>
+                    </dl>
+					
+					
+					
+					<?php if($isAutoShipSelected):  ?>
+					<dl>
+						<div>
+							You have subscribed to Autoship. Your shipment will be delivered every <?php echo $autoShip->getSelectedTerm($_item); ?>
+							<a data-toggle="modal" data-target="#UpdateCustomOption_<?php echo $_item->getId(); ?>" href="#" >(Change)</a>
+						</div>
+					</dl>
+					<?php else: ?>
+					<dl class="product-cart-info">
+						<img data-toggle="modal" data-target="#UpdateCustomOption_<?php echo $_item->getId(); ?>" style="width: 105px; cursor: pointer;" src="/pub/media/autoship/autoship.png" />
+						<br><span style="color:#3399cc;cursor: pointer;" class="ship_details">(details)</span>
+						<div class="ship_details_div c-cart-product" style="display: none;">
+							<p class="text-right close_trigger">X</p><p>You Will love our <br><span> Autoship</span> features: </p>
+							<ul>
+								<li>Easy to snooze or cancel online, anytime</li>
+								<li>Totally flexible—edit your order as often as you'd like </li>
+							</ul>
+						</div>
+					</dl>
+					<?php endif; ?>
+					
+					
+                <?php endif;?>
+				
+
+				
+                <?php if ($messages = $block->getMessages()): ?>
+                    <?php foreach ($messages as $message): ?>
+                        <div class="cart item message <?= /* @escapeNotVerified */ $message['type'] ?>"><div><?= $block->escapeHtml($message['text']) ?></div></div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                <?php $addInfoBlock = $block->getProductAdditionalInformationBlock(); ?>
+                <?php if ($addInfoBlock): ?>
+                    <?= $addInfoBlock->setItem($_item)->toHtml() ?>
+                <?php endif;?>
+            </div>
+			
+		<?php if($block->getQty() == 2 ):?>
+		<div class="save_20_div">
+			<p class="save_20">Order 3 and get<br>each item for<br><span>JUST <?php echo $this->helper('Magento\Checkout\Helper\Data')->formatPrice($_item->getProduct()->getFinalPrice()-$_item->getProduct()->getFinalPrice()*20/100); ?>!</span></p>
+		</div>
+		<?php endif; ?>
+			
+        </td>
+		
+		<td class="col your-price" data-th="<?= $block->escapeHtml(__('Your Price')) ?>">
+			<span class="price-excluding-tax" data-label="Excl. Tax">
+				<span class="cart-price">
+					<span class="price">
+					<?php if($_item->getProduct()->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE): ?>
+					<?php
+						$productId = $_item->getProduct()->getId();
+						$S_product = $objectManager->get('Magento\Catalog\Model\Product')->load($productId);
+						$discountPercent =(int)$S_product->getSpecialPrice();
+						if($discountPercent==0){$discountPercent = 1;}
+						$totalPrice = ($_item->getPrice()*100)/$discountPercent;
+						?>
+						<span style='color:#a0a0a0;text-decoration:line-through'>              
+							<?=$this->helper('Magento\Checkout\Helper\Data')->formatPrice($totalPrice)?>              
+						</span>
+					<?php else: ?>
+					<?php echo $this->helper('Magento\Checkout\Helper\Data')->formatPrice($_item->getProduct()->getFinalPrice()); ?>
+					<?php endif; ?>
+					</span>            
+				</span>
+			</span>
+        </td>
+
+        <?php if ($canApplyMsrp): ?>
+            <td class="col msrp" data-th="<?= $block->escapeHtml(__('Price')) ?>">
+                <span class="pricing msrp">
+                    <span class="msrp notice"><?= /* @escapeNotVerified */ __('See price before order confirmation.') ?></span>
+                    <?php $helpLinkId = 'cart-msrp-help-' . $_item->getId(); ?>
+                    <a href="#" class="action help map" id="<?= /* @escapeNotVerified */ ($helpLinkId) ?>" data-mage-init='{"addToCart":{"helpLinkId": "#<?= /* @escapeNotVerified */ $helpLinkId ?>","productName": "<?= /* @escapeNotVerified */ $product->getName() ?>","showAddToCart": false}}'>
+                        <span><?= /* @escapeNotVerified */ __("What's this?") ?></span>
+                    </a>
+                </span>
+            </td>
+        <?php else: ?>
+            <td class="col price" data-th="<?= $block->escapeHtml(__('Price')) ?>">
+			<?php if($_item->getProduct()->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE): ?>
+				<span style='color:#a0a0a0;'>              
+					<?=$this->helper('Magento\Checkout\Helper\Data')->formatPrice($_item->getPrice())?>              
+				</span>
+			<?php else: ?>
+                <?= $block->getUnitPriceHtml($_item) ?>
+			<?php endif; ?>
+            </td>
+        <?php endif; ?>
+		
+        <td class="col qty" data-th="<?= $block->escapeHtml(__('Qty')) ?>">
+            <div class="field qty">
+                <label class="label" for="cart-<?= /* @escapeNotVerified */ $_item->getId() ?>-qty">
+                    <span><?= /* @escapeNotVerified */ __('Qty') ?></span>
+                </label>
+                <div class="control qty">
+                    <input id="cart-<?= /* @escapeNotVerified */ $_item->getId() ?>-qty"
+                           name="cart[<?= /* @escapeNotVerified */ $_item->getId() ?>][qty]"
+                           data-cart-item-id="<?= $block->escapeHtml($_item->getSku()) ?>"
+                           value="<?= /* @escapeNotVerified */ $block->getQty() ?>"
+                           type="number"
+                           size="4"
+                           title="<?= $block->escapeHtml(__('Qty')) ?>"
+                           class="input-text qty"
+                           data-validate="{required:true,'validate-greater-than-zero':true}"
+                           data-role="cart-item-qty"/>
+                </div>
+            </div>
+        </td>
+
+        <td class="col subtotal" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
+            <?php if ($canApplyMsrp): ?>
+                <span class="cart msrp subtotal">--</span>
+            <?php else: ?>
+                <?= $block->getRowTotalHtml($_item) ?>
+            <?php endif; ?>
+        </td>
+		<td colspan="4" class="col edit" data-th="<?= $block->escapeHtml(__('Edit')) ?>">
+            <div class="actions-toolbar">
+                <?= /* @escapeNotVerified */ $block->getActions($_item) ?>
+            </div>
+        </td>
+    </tr>
+
+
+</tbody>
+
+
+
+<?php 
+if($isAutoShip):
+$terms = $objectManager->get('Vsi\Autoship\Model\Autoship')->getAutoshipTerms($_item->getProduct()->getId());
+?>
+<!-- Modal -->
+<div id="UpdateCustomOption_<?php echo $_item->getId(); ?>" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div style="max-width: 370px;" class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Select period</h4>
+      </div>
+      <div class="modal-body">
+        <div class="input-box">
+        <select id="select_term_<?php echo $_item->getId(); ?>" style="width: 100%;" name="term"  class="required-entry product-custom-option" >
+              <option value="-1">None</option>
+              <?php foreach($terms as $term): ?>
+              <option value="<?php echo $term['terms_id'] ?>"><?php echo $term['label']; ?></option>
+              <?php endforeach; ?>
+        </select>
+        </div>
+        <br/>
+        <div class="input-box">
+            <button class="button updatePeriod" data-item="<?php echo $_item->getId(); ?>" type="Button">Submit</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
+<script>
+	require(['jquery', 'jquery/ui'], function($){
+	  $(document).ready( function() {
+		if( $('td.col.price .price-excluding-tax .cart-price .price').html() == '$0.00'){
+		   var subTotal  = $('td.col.subtotal .price-excluding-tax .cart-price .price').html();
+		   subTotal = subTotal.substring(1);
+		   var qty =  $('.input-text.qty').val();
+		   var total = subTotal/qty;
+		   $('td.col.price .price-excluding-tax .cart-price .price').html('$'+total);
+		 }
+	  });
+	});
+</script>
+<script>
+	require(['jquery', 'jquery/ui'], function($){
+	  jQuery(document).ready( function() {
+		jQuery('.save_20_div').css('margin-left',jQuery('.product-item-photo').width()+9);
+		jQuery('.save_20_div').parent('.reduce_padding').find('.product-item-details').css('padding-bottom','0');
+	  });
+	});
+</script>

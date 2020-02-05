@@ -1,0 +1,264 @@
+<style>
+.affilaite_form input.form-control {border-radius: 1px;border: 2px solid #b1b1b1;}
+.affilaite_form .required{float:right;}
+.textBox {border: 1px solid #ccc;padding: 15px;height: 180px;overflow-y: scroll;font-size: 12px; margin-top: 10px;color:#81755f;}
+.affilaite_form .form-instructions {color:#4b4129;font-size:19px;}
+.padding_content {padding: 10px 60px;}
+.affilaite_form .form-horizontal{ margin-top: 15px;}
+.affilaite_form .form-horizontal label{ text-align:left;}
+.control-label span,.checkbox span{color:#577c0f;}
+.checkbox label{font-weight: bold; color:#565141;}
+.affiliate_footer{clear:both;}
+.email-subscribe.e-subscribe-container { margin-top: 0px;}
+.recaptcha{float:right;}
+.clear_float{clear:both;padding: 10px 0px;}
+.textBox ul li {
+    list-style: initial !important;
+}
+.textBox ul {
+    margin-left: 35px;
+}
+.res_p {
+    background: #d9ffaa;
+    color: #565141;
+    padding: 5px 14px;
+}
+
+@media only screen and (max-width: 768px) {
+ .padding_content {padding: 0px;}
+ body {margin-top: 126px !important;}
+}
+</style>
+
+
+<div class="container affilaite_form">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+
+        <br>
+        <p class="form-instructions">Thank you for your interest in Terry Naturally<sup>&reg;</sup> Vitamins Affiliate Program.
+            <br> Please complete the form below to sign up and get started.</p>
+
+        <div class="padding_content">
+            <p style="color: #7a9846;" class="required">* All Fields Required</p>
+            <br>
+            <form id="create_affiliate" class="form-horizontal" method="post" action="/fix/affiliate/">
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="fname"><span>*</span>First Name:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="firstname" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3 " for="lname"><span>*</span>Last Name:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="lastname" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3 " for="email"><span>*</span>Email:</label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3 " for="confirm email"><span>*</span>Confirm Email:</label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control" name="confirmemail" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3 " for="pwd"><span>*</span>Password:</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3 " for="pwd"><span>*</span>Confirm Password:</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" name="confirmation" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <h3>Terms and Conditions</h3>
+                        <div class="textBox">
+                            <p><span style="font-size: xx-small;">Date last modified: February, 2019</span></p>
+                            <p><strong>AFFILIATE WEBSITE LINKING AGREEMENT </strong></p>
+                            <p>This Affiliate Website Linking Agreement (this &ldquo;Agreement&rdquo;) is entered into as of the date of auto-approval of the application by and between EuroPharma, Inc., having a principal place of business at Green Bay, Wisconsin, hereinafter known as (&ldquo;Terry Naturally Brand of Dietary Supplements&rdquo;, or &ldquo;Terry Naturally&rdquo;, or &ldquo;Terry NaturallyVitamins.com&rdquo;) and Affiliate, hereinafter known as (the &ldquo;Affiliate&rdquo; or the &ldquo;Applicant&rdquo;) having its principal place of business as denoted on the application. Terry Naturally and Applicant may each be referred to as a &ldquo;Party&rdquo; or collectively as the &ldquo;Parties&rdquo;.</p>
+                            <p><strong>WHEREAS, </strong>Terry Naturally desires to allow Applicant to establish the HTML Linking of Affiliate&rsquo;s website to Terry Naturally&rsquo;s website upon the terms and conditions contained in this Agreement.</p>
+                            <p><strong>NOW, THEREFORE, </strong>in consideration of the obligations set forth below and for good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the Parties agree as follows:</p>
+                            <ol>
+                                <li><strong> Modification</strong></li>
+                            </ol>
+                            <p>We may modify any of the terms and conditions within this Agreement at any time and at our sole discretion. In such event, you will be notified by email. Modifications may include, but are not limited to, changes in the payment procedures and Terry Naturally&rsquo;s Affiliate Program rules. If any of the modifications are unacceptable to you, your only recourse is to terminate this Agreement. If you continue participation in Terry Naturally&rsquo;s Affiliate Program following the posting of the change notice or new agreement, it will be considered as your acceptance of the change.</p>
+                            <ol start="2">
+                                <li><strong> Enrollment</strong></li>
+                            </ol>
+                            <p>To enroll in the affiliate program, you can sign up at TerryNaturallyVitamins.com/affiliate-program. The fact that we auto-approve applications does not imply that we may not re-evaluate your application at a later time. We may reject your application at our sole discretion. We may cancel your application if we determine that your site is unsuitable for our Affiliate Program (See Section 9 for qualifying sites).</p>
+                            <ol start="3">
+                                <li><strong> Affiliate URL</strong></li>
+                            </ol>
+                            <p>You will be issued a special URL once you become a member of Terry Naturally&rsquo;s Affiliate Program which will be unique to you and you only and will allow you to be paid for affiliate referrals. You will be able to obtain this URL once you have signed up and logged in to your Affiliate Account.</p>
+                            <ol start="4">
+                                <li><strong> Commissions</strong></li>
+                            </ol>
+                            <p>Affiliates will receive 5% of the revenue (excluding shipping cost and taxes) as a commission from total orders placed through properly coded Affiliate links. Commissions may change at the discretion of the product publisher. Commissions may increase during limited time special promotions, but they will return thereafter to the regular 5% commission rate.</p>
+                            <p>For a sale to generate a commission to an Affiliate, the customer must complete the order form and remit full payment for the product ordered through the secure order system using the link from the affiliate site. Visitors will be tracked within a 45 day cookie window until they place an order. Word of mouth referrals will not result in an affiliate commission being generated. Commissions will only be paid on sales that are made when the customer clicks through qualified, correctly structured Affiliate links. Properly coded links are the sole responsibility of the affiliate.</p>
+                            <ol start="5">
+                                <li><strong> Payment </strong></li>
+                            </ol>
+                            <p>Affiliates will qualify for payment once they have reached a minimum payout amount of $50. Once the minimum payout amount has been met, affiliates can request a withdrawal, and Terry Naturally will pay affiliates via check. The first time an affiliate requests a withdrawal, they will be asked to fill out a W-9 tax form prior to receiving their payment. Affiliates will not receive their first payment until Terry Naturally receives the W-9 tax form. Once a withdrawal request has been made, affiliates will not be allowed to request any additional withdrawals for 15 days.</p>
+                            <ol start="6">
+                                <li><strong> Access to Affiliate Account Interface</strong></li>
+                            </ol>
+                            <p>Once an affiliate signs up for our Affiliate Program, they can use their email address and password to access Terry Naturally&rsquo;s secure affiliate account interface. From there, you will be able to review program details, access banner creatives and links, track traffic, view commission, request payment withdrawals, and update account settings.</p>
+                            <ol start="7">
+                                <li><strong> Order Fulfillment</strong></li>
+                            </ol>
+                            <p>Terry Naturally will be solely responsible for processing every order placed by a customer via affiliate links. Affiliates are not authorized to collect payments or sell any Terry Naturally products from other websites as a "reseller" and no "resale" rights are granted in any way. Affiliates are not authorized to sell any of these products on Amazon, ebay, or other auction sites. Affiliates are not authorized to give away copies of any of these products. Terry Naturally will also be solely responsible for all customer service inquires. All affiliates understand and acknowledge that no physical products will be shipped.</p>
+                            <p>Customers who purchase products and services through the Terry Naturally Affiliate Program will be deemed to be customers of Terry Naturally. Accordingly, all rules, policies, and operating procedures concerning customer orders and service will apply to those customers. We may change our policies and operating procedures at any time. Prices and availability of our products and services may vary from time to time. Terry Naturally policies will always determine the price paid by the customer.</p>
+                            <ol start="8">
+                                <li><strong> Qualifying Sites</strong></li>
+                            </ol>
+                            <p>Terry Naturally reserves the right to refuse any site entry into the Terry Naturally Affiliate Program based on site content. Sites that do not qualify for the Affiliate Program include sites which:</p>
+                            <ul>
+                                <li>Fail to comply with the Dietary Supplement Health and Education Act of 1994</li>
+                                <li>Promote sexually explicit materials</li>
+                                <li>Promote violence</li>
+                                <li>Promote discrimination based on race, sex, religion, nationality, disability, sexual orientation, or age</li>
+                                <li>Promote illegal activities</li>
+                                <li>List coupon codes or discounts that were not officially provided to them by Terry Naturally. Want to promote a coupon? Contact us and we can work with you. You may not promote coupon codes you may have found elsewhere online. Doing so can result in the termination of your affiliate account and withholding of affiliate payments for violating our affiliate agreement.</li>
+                                <li>Infringe or otherwise violate any copyright, trademark, or other intellectual property rights of Terry Naturally, TerryNaturallyVitamins.com, or any other site.</li>
+                                <li>Includes &ldquo;Terry Naturally&rdquo; or variations or misspellings thereof in its domain name</li>
+                                <li>Is otherwise in any way unlawful, harmful, threatening, defamatory, obscene, harassing, or racially, ethnically or otherwise objectionable to us in our sole discretion.</li>
+                                <li>You may not create or design your website or any website that you operate, explicitly or implied in a manner which resembles our website nor design your website in a manner which leads customers to believe you are TerryNaturallyVitamins.com or any other affiliated business.</li>
+                            </ul>
+                            <p>Terry Naturally reserves the right, at any time, to review your placement and approve the use of your links and require that you change the placement or use to comply with the guidelines provided to you.</p>
+                            <p>The maintenance and the updating of your site will be your responsibility. We may monitor your site as we feel necessary to make sure that it is up-to-date and to notify you of any changes that we feel should enhance your performance.</p>
+                            <p>It is entirely your responsibility to follow all applicable intellectual property and other laws that pertain to your site. You must have express permission to use any person&rsquo;s copyrighted material, whether it is in writing, an image, or any other copyrightable work. We will not be responsible (and you will be solely responsible) if you use another person&rsquo;s copyrighted material or other intellectual property in violation of the law or any third party rights.</p>
+                            <ol start="9">
+                                <li><strong> Permitted Usage</strong></li>
+                            </ol>
+                            <p>The following cases are permitted uses of the Terry Naturally brand and marketing resources</p>
+                            <ul>
+                                <li>Affiliates are permitted to use the graphical banners and design resources located in the Affiliate Program interface after an affiliate has logged in. If a specific size banner ad is not available, the affiliate may contact the Affiliate Program Manager at <a href="mailto:affiliates@terrynaturallyvitamins.com"><u>affiliates@terrynaturallyvitamins.com</u></a>and request a new banner graphic be added to the available resources.</li>
+                            </ul>
+                            <ol start="10">
+                                <li><strong> Prohibited Usage</strong></li>
+                            </ol>
+                            <p>The following cases prohibited and are grounds for&nbsp;<a href="#termination">immediate termination</a>&nbsp;of the affiliate account.</p>
+                            <ul>
+                                <li>Affiliates may not use the Terry Naturally logo, logo marks or other Terry Naturally website/branding imagery in a header graphic or in any way as to indicate they are officially affiliated or partnered with Terry Naturally/TerryNaturallyVitamins.com.</li>
+                                <li>Affiliates may not use the term &ldquo;Terry Naturally&rdquo; in any variation in their site URL.</li>
+                                <li>Affiliates may not promote coupons that were not provided to them personally by Terry Naturally. Want to promote a coupon? Contact us and we can work with you. You may not promote coupon codes you may have found elsewhere online. Doing so can result in the termination of your affiliate account and withholding of affiliate payments for violating our affiliate agreement.</li>
+                                <li>Affiliates may not host or promote "coupon stacking" sites where customers may combine coupons to receive additional discounts.</li>
+                            </ul>
+                            <ol start="11">
+                                <li><strong> Terry Naturally Anti-Spam Policy</strong></li>
+                            </ol>
+                            <p>Terry Naturally strictly prohibits affiliates from using spam e-mail and other forms of Internet abuse (including spamming forums, blogs, twitter, Facebook and other social media outlets) to seek sales. Spam is defined as including, but not limited to, the following:</p>
+                            <ul>
+                                <li>Electronic mail messages addressed to a recipient with whom the sender does not have an existing business or personal relationship or is not sent at the request of, or with the express consent of, the recipient through an opt in subscription;</li>
+                                <li>Messages posted to Usenet, forums, Twitter, Facebook and message boards that are off-topic (unrelated to the topic of discussion), cross-posted to unrelated newsgroups, posted in excessive volume, or posted against forum/message board rules. Be conscious of forum rules! If a forum owner or moderator complains that an affiliate has spammed, the affiliate account may be permanently terminated after investigation.</li>
+                                <li>Content posted on free blog websites for the sole purpose of keyword spamming, or comments posted to legitimate blogs that violate the comment policy of the blog owner.</li>
+                                <li>Solicitations posted to chat rooms, or to groups or individuals via Internet Relay Chat or "Instant Messaging" system</li>
+                                <li>Certain off-line activities that, while not considered Spam, are similar in nature, including distributing flyers or leaflets on private property or where prohibited by applicable rules, regulations, or laws.</li>
+                            </ul>
+                            <p>Terry Naturally, may undertake, at its sole discretion and with or without prior notice, the following enforcement actions:</p>
+                            <ul>
+                                <li>Account Termination: Upon the receipt of a credible complaint, the Terry Naturally Affiliate Program Manager may investigate the complaint, and if necessary, will then terminate the affiliate account of the individual implicated in the abuse. Termination results in the immediate closure of the member and affiliate account, the loss of all referrals, and the forfeiture of any unpaid money on account. At Terry Naturally&rsquo;s discretion, termination may not only result in being banned from the affiliate program, but also being banned from ANY other internal affiliate programs.</li>
+                            </ul>
+                            <p>If you wish to report a violation of our Anti-Spam Policy, please forward all relevant evidence to our Affiliate Program Manager at affiliates@terrynaturallyvitamins.com.</p>
+                            <ol start="12">
+                                <li><strong> Relationship of Parties</strong></li>
+                            </ol>
+                            <p>Affiliates are independent contractors, and nothing in this Agreement will create any partnership, joint venture, agency, franchise, sales representative, or employment relationship between the parties. Affiliates have no authority to make or accept any offers or representations on our behalf. Affiliates will not make any statement, whether on their sites or otherwise, that reasonably would contradict this statement.</p>
+                            <ol start="13">
+                                <li><strong> Term and Termination</strong></li>
+                            </ol>
+                            <p>The term of this Agreement will begin when you accept and will end when terminated by either party via a written notice. Written notice can be in the form of mail, email, or fax. Either Terry Naturally or the affiliate may terminate this Agreement at any time, with or without cause. Upon the termination of this Agreement for any reason, all licenses granted hereunder shall immediately terminate and you will immediately cease use of, and remove from Affiliate's Web Site, all links to the Terry Naturally websites, and all Terry Naturally trademarks and logos, other Terry Naturally marks and all other materials provided in connection with this program.</p>
+                            <ol start="14">
+                                <li><strong> Limitation of Liability</strong></li>
+                            </ol>
+                            <p>Terry Naturally will not be liable for indirect, special, or consequential damages (or any loss of revenue, profits, expenditures or data) arising in connection with this Agreement or the Program, even if we have been advised of the possibility of such damages. Further, our aggregate liability arising with respect to this Agreement and the Program will not exceed the total commissions paid or payable to the affiliate under to this Agreement.</p>
+                            <ol start="15">
+                                <li><strong> Disclaimers</strong></li>
+                            </ol>
+                            <p>We make no express or implied warranties or representations with respect to the Affiliate Program or an affiliate's potential to earn income from the Affiliate Program. In addition, we make no representation that the operation of the websites or the Affiliate links will be uninterrupted or error-free, and Terry Naturally will not be liable for the consequences of any interruptions or errors.</p>
+                            <ol start="16">
+                                <li><strong> Confidentiality</strong></li>
+                            </ol>
+                            <p>All confidential information, including, but not limited to, any business, technical, financial, and customer information, disclosed by one party to the other during negotiation or the effective term of this agreement which is marked &ldquo;Confidential,&rdquo; will remain the sole property of the disclosing party, and each party will keep in confidence and not use or disclose such proprietary information of the other party without express written permission of the disclosing party.</p>
+                            <ol start="17">
+                                <li><strong> Miscellaneous</strong></li>
+                            </ol>
+                            <p>Our failure to enforce your strict performance of any provision of this Agreement will not constitute a waiver of our right to subsequently enforce such provision or any other provision of this Agreement.</p>
+                            <p>If any of the provisions of this Agreement are determined by a court to be unenforceable, they shall be severed from this Agreement, and the remaining provisions shall remain in full force and effect.</p>
+                            <p>By agreeing to be enrolled in the Terry Naturally Affiliate Program, you acknowledge that you have read this agreement and agree to all its terms and conditions. You have independently evaluated this program and are not relying on any representation, guarantee or statement other than as set forth in this agreement.</p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="terms" required><span>*</span>I Agree to the Above Terms and Conditions</label>
+                        </div>
+                    </div>
+                </div>
+                <input name="form_key" type="hidden" value="" />
+                <div class="input-box recaptcha">
+
+                </div>
+               
+				<div class="row">
+					<div class="col-md-8">
+						<div class="res"></div> 
+					</div>
+					<div class="col-md-4">
+						<p class="text-right clear_float">
+							<button type="submit" class="action primary"><span>Submit</span></button>
+						</p>
+					</div>
+				</div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+
+    <div class="affiliate_footer">
+        <p class="color_grey text-center">If you have additional questions about our Affiliate program, please contact us at:</p>
+        <p class="text-center"><img class="at_image" alt="" src="/media/img/04.png"> <b class="color_grey">Affiliates@TerryNaturallyVitamins.com </b></p>
+    </div>
+</div>
+
+<script>
+ require(["jquery"],function($){
+     jQuery(document).on('submit','#create_affiliate',function(e){
+        e.preventDefault();
+			var form = jQuery(this);
+			jQuery('body').trigger('processStart');
+			jQuery.ajax({
+					type:"POST",
+					url:form.attr("action"),
+					data:form.serialize(),
+					success: function(response){
+						jQuery('body').trigger('processStop');
+						jQuery('.res').html('<p class="res_p">'+response+'</p>');
+						//form.trigger("reset");
+					}
+				});
+
+     })
+ })
+</script>

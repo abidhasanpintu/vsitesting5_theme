@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page layout="2columns-right"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <move element="page.main.title" destination="product.info.main" before="-"/>
+        <move element="product.info.stock.sku" destination="product.info.price" after="product.price.final"/>
+        <move element="product.info.review" destination="product.info.main" before="product.info.price"/>
+		<move element="catalog.product.related" destination="sidebar.additional" />
+		
+
+		
+		<referenceBlock name="page.main.title">
+			<block class="Magento\Catalog\Block\Product\View\Description" name="product.short_description" template="Magento_Catalog::product/view/short_description.phtml" />
+		</referenceBlock>
+		
+		<!-- REMOVE MORE INFO TAB -->
+		<referenceBlock name="product.attributes" remove="true"/>
+		
+		<referenceBlock name="product.info.details">
+            <block class="Magento\Catalog\Block\Product\View" name="product_info.tab" as="product_info" template="Magento_Catalog::product/view/description.phtml" group="detailed_info">
+                <arguments>
+                    <argument translate="true" name="title" xsi:type="string">Product Info</argument>
+					<argument name="sort_order" xsi:type="string">12</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+		
+		<referenceBlock name="product.info.details">
+            <block class="Magento\Review\Block\Product\Review" name="reviews.tab" as="reviews" template="Magento_Review::review.phtml" group="detailed_info" ifconfig="catalog/review/active">
+                <arguments>
+					<argument translate="true" name="title" xsi:type="string">Testimonials</argument>
+                    <argument name="sort_order" xsi:type="string">40</argument>
+                </arguments>
+                <block class="Magento\Review\Block\Form" name="product.review.form" as="review_form" ifconfig="catalog/review/active">
+                    <container name="product.review.form.fields.before" as="form_fields_before" label="Review Form Fields Before"/>
+                </block>
+            </block>
+        </referenceBlock>
+        
+        <referenceBlock name="catalog.product.related" template="Magento_Catalog::product/related.phtml">
+            <arguments>
+                <argument name="type" xsi:type="string">related</argument>
+            </arguments>
+            <block class="Magento\Catalog\Block\Product\ProductList\Item\Container" name="related.product.addto" as="addto">
+            <block class="Magento\Catalog\Block\Product\ProductList\Item\AddTo\Compare"
+                       name="related.product.addto.compare" as="compare"
+                       template="Magento_Catalog::product/list/addto/compare.phtml"/>
+            </block>
+            
+        </referenceBlock>
+        
+        <referenceBlock name="product.info.upsell" template="Magento_Catalog::product/upsell.phtml">
+            <arguments>
+                <argument name="type" xsi:type="string">upsell</argument>
+            </arguments>
+            <block class="Magento\Catalog\Block\Product\ProductList\Item\Container" name="upsell.product.addto" as="addto">
+            <block class="Magento\Catalog\Block\Product\ProductList\Item\AddTo\Compare"
+                       name="upsell.product.addto.compare" as="compare"
+                       template="Magento_Catalog::product/list/addto/compare.phtml"/>
+            </block>
+            
+        </referenceBlock>
+		
+		<referenceBlock name="product.review.form">
+			<arguments>
+				<argument name="jsLayout" xsi:type="array">
+					<item name="components" xsi:type="array">
+						<item name="review-form" xsi:type="array">
+							<item name="component" xsi:type="string">Magento_Review/js/view/review</item>
+						</item>
+					</item>
+				</argument>
+			</arguments>
+		</referenceBlock>
+
+		<move element="product.info.upsell" destination="footer-container" before="-"/>
+		
+		
+		<referenceContainer name="content">
+
+            <container name="product.info.media" htmlTag="div" htmlClass="product media" after="product.info.main">
+                <block class="Magento\Framework\View\Element\Template" name="skip_gallery_after.target" before="skip_gallery_before.wrapper" template="Magento_Theme::html/skiptarget.phtml">
+                    <arguments>
+                        <argument name="target_id" xsi:type="string">gallery-prev-area</argument>
+                    </arguments>
+                </block>
+                <container name="skip_gallery_before.wrapper" htmlTag="div" htmlClass="action-skip-wrapper">
+                    <block class="Magento\Framework\View\Element\Template" before="product.info.media.image" name="skip_gallery_before" template="Magento_Theme::html/skip.phtml">
+                        <arguments>
+                            <argument name="target" xsi:type="string">gallery-next-area</argument>
+                            <argument name="label" translate="true" xsi:type="string">Skip to the end of the images gallery</argument>
+                        </arguments>
+                    </block>
+                </container>
+                <block class="Magento\Catalog\Block\Product\View\Gallery" name="product.info.media.image" template="Magento_Catalog::product/view/gallery.phtml"/>
+                <container name="skip_gallery_after.wrapper" htmlTag="div" htmlClass="action-skip-wrapper">
+                    <block class="Magento\Framework\View\Element\Template" after="product.info.media.image" name="skip_gallery_after" template="Magento_Theme::html/skip.phtml">
+                        <arguments>
+                            <argument name="target" xsi:type="string">gallery-prev-area</argument>
+                            <argument name="label" translate="true" xsi:type="string">Skip to the beginning of the images gallery</argument>
+                        </arguments>
+                    </block>
+                </container>
+                <block class="Magento\Framework\View\Element\Template" name="skip_gallery_before.target" after="skip_gallery_after.wrapper" template="Magento_Theme::html/skiptarget.phtml">
+                    <arguments>
+                        <argument name="target_id" xsi:type="string">gallery-next-area</argument>
+                    </arguments>
+                </block>
+            </container>
+            
+        </referenceContainer>
+
+		
+    </body>
+
+</page>

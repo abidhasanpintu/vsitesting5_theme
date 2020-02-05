@@ -1,0 +1,124 @@
+<?php
+/**
+* Magento
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE_AFL.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/afl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@magentocommerce.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade Magento to newer
+* versions in the future. If you wish to customize Magento for your
+* needs please refer to http://www.magentocommerce.com for more information.
+*
+* @category    design
+* @package     base_default
+* @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+* @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+*
+* Template for Mage_Page_Block_Html
+*/
+?>
+<style>
+.home_blog_section .thumbnail_image{width:100%}
+#banner-slider-carousel .banner-title{display:none;}
+</style>
+ <div class="wrapper<?= ($_SERVER['REQUEST_URI'] == '/' ? ' home' : null) ?>">
+	<div class="page">
+		<div class="col1-layout clearfix">
+			<div class="main clearfix">
+				<div class="col-main clearfix">
+
+				<!--Featured Products Sections -->
+				
+				<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('animal-home-section-1')->toHtml(); ?>
+				<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('animal_home_slider_mobile')->toHtml(); ?>
+
+	<?php //echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal-home-section-1')->toHtml(); ?>
+     <?php //echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal_home_slider_mobile')->toHtml(); ?>
+	
+
+<div class="portfilo_section">
+    <?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('animal-home-section-2')->toHtml(); ?>
+   <?php //echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal-home-section-2')->toHtml(); ?>
+	
+</div>
+
+<div data-stellar-background-ratio="0.1" class="canine bg_can" onclick="location.href = '/shop/canine-health';">
+    <?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('animal-home-section-3')->toHtml(); ?>
+   <?php // echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal-home-section-3')->toHtml(); ?>
+	
+</div>
+ <br>
+<div data-stellar-background-ratio="0.1" class="canine bg_pan" onclick="location.href = '/shop/equine-health';">
+    <?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('animal-home-section-4')->toHtml(); ?>
+   <?php //echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal-home-section-4')->toHtml(); ?>
+	
+</div>
+
+<br>
+
+<div class="testimonial_secttion">
+    <?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('animal-home-section-5')->toHtml(); ?>
+   <?php //echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal-home-section-5')->toHtml(); ?>
+	
+</div><br>
+
+
+
+
+
+
+			
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Banner Section  Backup
+<div class="row text-center" style="margin-top: 2px; margin-bottom: 2px; clear: both;">
+<div class="col-md-4">
+<p><a href="/categories/pet-health/"><img src="https://www.vsitesting5.com/pub/media/images/TNV-STATIC-ADS/TNAH_ProbioticDailyPROMO_11.19.jpg" /></a></p>
+</div>
+<div class="col-md-4">
+<div class="promo_banner"><a href="/auto-ship/"><img src="https://www.terrynaturallyvitamins.com/pub/media/images/TNV-STATIC-ADS/TN-AutoShip.jpg" /></a></div>
+</div>
+<div class="col-md-4 iframe_container"></div>
+</div>
+
+-->
+
+
+
+
+
+
+
+<script>
+require(['jquery', 'jquery/ui'], function(){
+        
+        jQuery(document).ready(function(){
+             var widthNumber = jQuery('.home_adv .promo_banner').width();
+			 var heightNumber = jQuery('.home_adv .promo_banner').height();
+			 var iframe = '<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FTerryNaturally%2F&tabs=timeline&width='+widthNumber+'&height='+heightNumber+'&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="'+widthNumber+'" height="'+heightNumber+'" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>';
+             jQuery('.iframe_container').html(iframe);
+        });
+    
+    
+    });
+</script>
+
+
+ 
+        
+<!-- Use of this pixel is subject to the Amazon ad specs and policies at http://www.amazon.com/b/?&node=7253015011 -->
+<script type='text/javascript'>var _pix = document.getElementById('_pix_id_64a58de1-4035-41fd-e560-a8ca4b91d024');if (!_pix) { var protocol = '//'; var a = Math.random() * 1000000000000000000; _pix = document.createElement('iframe'); _pix.style.display = 'none'; _pix.setAttribute('src', protocol + 's.amazon-adsystem.com/iu3?d=generic&ex-fargs=%3Fid%3D64a58de1-4035-41fd-e560-a8ca4b91d024%26type%3D55%26m%3D1&ex-fch=416613&ex-src=https://www.terrynaturallyvitamins.com/&ex-hargs=v%3D1.0%3Bc%3D2095520730301%3Bp%3D64A58DE1-4035-41FD-E560-A8CA4B91D024' + '&cb=' + a); _pix.setAttribute('id','_pix_id_64a58de1-4035-41fd-e560-a8ca4b91d024'); document.body.appendChild(_pix);}</script><noscript> <img height='1' width='1' border='0' alt='' src='https://s.amazon-adsystem.com/iui3?d=forester-did&ex-fargs=%3Fid%3D64a58de1-4035-41fd-e560-a8ca4b91d024%26type%3D55%26m%3D1&ex-fch=416613&ex-src=https://www.terrynaturallyvitamins.com/&ex-hargs=v%3D1.0%3Bc%3D2095520730301%3Bp%3D64A58DE1-4035-41FD-E560-A8CA4B91D024' /></noscript>

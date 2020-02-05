@@ -1,0 +1,233 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+use Magento\Framework\App\Action\Action;
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+/**
+ * Category view template
+ *
+ * @var $block \Magento\Catalog\Block\Category\View
+ */
+?>
+<style>
+.block.filter {display: none;}
+.category-products {padding-top: 35px;}
+.page-title-wrapper {
+    display: none;
+}
+
+</style>
+<?php
+/**
+ * Product list template
+ *
+ * @var $block \Magento\Catalog\Block\Product\ListProduct
+ */
+?>
+<?php
+$_productCollection = $block->getLoadedProductCollection();
+$_helper = $this->helper('Magento\Catalog\Helper\Output');
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$cartHelper = $objectManager->get('\Magento\Checkout\Helper\Cart'); 
+
+$category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+   if($category == NULL){$catDescription = '';}
+   else{$catDescription = $category->getDescription();}
+?>
+
+<?php 
+
+	if(isset($_GET['q'])){
+		$pid = [];
+		foreach($_productCollection as $k=>$p){
+			if(!in_array($p->getId(),$pid)){
+				$pid[] = $p->getId();
+			}
+		}
+		$q = 'no result';
+		if(isset($_GET['q'])){ $q = $_GET['q']; }
+		$ingredients = $objectManager->create('\Vsi\Ingredient\Model\Item')
+									->getCollection()
+									//->addFieldToFilter('title', array('like' => '%'.$q.'%'))
+									//->addFieldToFilter('description', array('like' => '%'.$q.'%'));
+									->addFieldToFilter(
+										array('title', 'description'),
+										array(
+											array('like'=>'%'.$q.'%'), 
+											array('like'=>'%'.$q.'%')
+										)
+									);
+		$iPid=[];
+		foreach($ingredients as $i){
+			if(!in_array($i->getProductId(),$pid)){
+				$iPid[] = $i->getProductId();
+			}
+		}
+		$productCollectionFactory = $objectManager->get('\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory');
+		$pCollection = $productCollectionFactory->create();
+		$pCollection->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
+					->addFieldToFilter('entity_id', array('in' => $iPid))
+					->addAttributeToSelect('*');
+		foreach($pCollection as $oProduct){
+			if(!in_array($oProduct->getId(),$pid)){
+				//$_productCollection->removeItemByKey($oProduct->getId());
+				$_productCollection->addItem($oProduct);
+			}
+		}
+	}
+	
+ ?>
+
+
+<?php if (!$_productCollection->count()): ?>
+    <div class="message info empty"><div><?= /* @escapeNotVerified */ __('We can\'t find products matching the selection.') ?></div></div>
+<?php else: ?>
+    <?= $block->getToolbarHtml() ?>
+    <?= $block->getAdditionalHtml() ?>
+    <?php
+    if ($block->getMode() == 'grid') {
+        $viewMode = 'grid';
+        $imageDisplayArea = 'category_page_grid';
+        $showDescription = false;
+        $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+    } else {
+        $viewMode = 'list';
+        $imageDisplayArea = 'category_page_list';
+        $showDescription = true;
+        $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::FULL_VIEW;
+    }
+    /**
+     * Position for actions regarding image size changing in vde if needed
+     */
+    $pos = $block->getPositioned();
+    ?>
+	
+
+	
+<?php if(!empty($catDescription)): ?>
+    <div class="category-description std">
+	   <?php echo $catDescription; ?>
+     </div>
+<?php endif; ?>
+
+
+       
+		
+
+	
+	<div class="category-products">
+	    <ol class="products-list" id="products-list">
+		<?php $_iterator = 0; ?>
+		    <?php foreach ($_productCollection as $_product): ?>
+             <li class="item<?php if( ++$_iterator == sizeof($_productCollection) ): ?> last<?php endif; ?>"> 
+			     <?php
+						$productImage = $block->getImage($_product, $imageDisplayArea);
+						if ($pos != null) {
+							$position = ' style="left:' . $productImage->getWidth() . 'px;'
+								. 'top:' . $productImage->getHeight() . 'px;"';
+						}
+						?>
+						<?php // Product Image ?>
+						<a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" class="product-image" tabindex="-1">
+							<?= $productImage->toHtml() ?>
+						</a>		
+						
+            <?php // Product description ?>
+			<div class="product-shop">
+                <div class="f-fix">
+                    <div class="product-primary">
+                        <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
+                        <h2 class="product-name"><a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" title="<?php //echo $_productNameStripped; ?>"><?= /* @escapeNotVerified */ $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+                       
+
+
+					   <?php if($_product->getRatingSummary()): ?>
+                        <?php echo $this->getReviewsSummaryHtml($_product) ?>
+                        <?php endif; ?>
+                        
+                        <?php
+                        // Provides extra blocks on which to hang some features for products in the list
+                        // Features providing UI elements targeting this block will display directly below the product name
+                    /*    if ($this->getChild('name.after')) {
+                            $_nameAfterChildren = $this->getChild('name.after')->getSortedChildren();
+                            foreach ($_nameAfterChildren as $_nameAfterChildName) {
+                                $_nameAfterChild = $this->getChild('name.after')->getChild($_nameAfterChildName);
+                                $_nameAfterChild->setProduct($_product);
+                                echo $_nameAfterChild->toHtml();
+                            }
+                        }
+                     */   ?>
+                    </div>					
+					
+					
+					
+                    <div class="desc std">
+					
+							<p>
+								<?= /* @escapeNotVerified */ $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>		
+							</p>
+							
+                        <div class="p-weight">
+                        <?php
+                            //echo $_product->getResource()->getAttribute('product_weight')->getFrontend()->getValue($_product)
+                            
+                        ?>
+                        </div>
+						<a class="link-learn" href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" title="<?php //echo $_productNameStripped; ?>">Learn More...</a>
+                    </div>
+                    
+                </div>
+            </div>
+			 </li>
+			 <?php endforeach;?>
+		</ol>	
+	</div>
+		
+	
+	
+    <?= $block->getToolbarHtml() ?>
+    <?php if (!$block->isRedirectToCartEnabled()) : ?>
+        <script type="text/x-magento-init">
+        {
+            "[data-role=tocart-form], .form.map.checkout": {
+                "catalogAddToCart": {
+                    "product_sku": "<?= /* @NoEscape */ $_product->getSku() ?>"
+                }
+            }
+        }
+        </script>
+    <?php endif; ?>
+<?php endif; ?>
+
+
+<script>
+
+require(['jquery'], function(){
+	
+	jQuery(window).on('load',function(){
+		var wid = jQuery(window).width();
+		if(wid>991){
+			jQuery('.product-items .row').each(function(key,val){
+				var row = jQuery(this);
+				var col1 = row.find('.list-item:first-child .custom-options');
+				var col2 = row.find('.list-item:last-child .custom-options');
+				if(col1.length && col2.length){
+					var diff = Math.abs( col1.offset().top - col2.offset().top )+10;
+					if(col1.offset().top < col2.offset().top){
+						col1.css('margin-top',diff+'px');
+					}else{
+						col2.css('margin-top',diff+'px');
+					}
+				}
+			});
+		}
+	});
+});
+
+</script>
